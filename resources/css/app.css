@@ -1,0 +1,21 @@
+﻿@import "tailwindcss";
+
+@theme {
+  --color-cafe-brown: #6F4E37;
+  --color-cafe-light: #A0826D;
+  --color-cafe-dark: #3E2723;
+}
+
+@layer components {
+    .btn-primary {
+        @apply bg-cafe-brown hover:bg-cafe-dark text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg;
+    }
+    
+    .card-hover {
+        @apply transition duration-300 transform hover:scale-105 hover:shadow-2xl;
+    }
+    
+    .input-field {
+        @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cafe-brown focus:border-transparent;
+    }
+}
