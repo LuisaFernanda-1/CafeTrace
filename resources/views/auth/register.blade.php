@@ -3,372 +3,711 @@
 @section('title', 'Crear Cuenta - ' . ucfirst($role))
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 py-12 relative overflow-hidden">
-    
-    <!-- Patrón de fondo animado -->
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
-    </div>
 
-    <!-- Elementos decorativos flotantes -->
-    <div class="absolute top-20 left-10 w-72 h-72 bg-green-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
-    <div class="absolute top-40 right-10 w-72 h-72 bg-amber-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
-    <div class="absolute -bottom-20 left-40 w-72 h-72 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
-
-    <div class="w-full max-w-4xl relative z-10">
-        
-        <!-- Botón Volver -->
-        <a href="{{ route('home') }}" class="inline-flex items-center text-white/80 hover:text-white mb-8 transition group">
-            <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center mr-3 group-hover:bg-white/20 transition">
-                <i class="fas fa-arrow-left text-sm"></i>
-            </div>
-            <span class="font-medium">Volver al inicio</span>
-        </a>
-
-        <!-- Card Principal -->
-        <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20">
-            
-            @php
-                $config = [
-                    'caficultor' => [
-                        'gradient' => 'from-green-500 via-emerald-600 to-green-700',
-                        'icon' => 'fa-seedling',
-                        'iconBg' => 'bg-green-400/20',
-                        'accentColor' => 'green',
-                        'title' => 'Únete como Caficultor',
-                        'subtitle' => 'Registra tu finca y comienza a vender directamente'
-                    ],
-                    'comprador' => [
-                        'gradient' => 'from-amber-500 via-orange-600 to-orange-700',
-                        'icon' => 'fa-shopping-cart',
-                        'iconBg' => 'bg-amber-400/20',
-                        'accentColor' => 'amber',
-                        'title' => 'Únete como Comprador',
-                        'subtitle' => 'Encuentra café de alta calidad con total transparencia'
-                    ]
-                ];
-                $cfg = $config[$role];
-            @endphp
-
-            <!-- Header -->
-            <div class="relative bg-gradient-to-br {{ $cfg['gradient'] }} p-8 md:p-10 text-white overflow-hidden">
-                <!-- Patrón decorativo -->
-                <div class="absolute inset-0 opacity-10">
-                    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M0 40L40 0H20L0 20M40 40V20L20 40\'/%3E%3C/g%3E%3C/svg%3E')"></div>
-                </div>
-                
-                <div class="relative text-center">
-                    <div class="inline-flex items-center justify-center w-20 h-20 {{ $cfg['iconBg'] }} backdrop-blur-sm rounded-2xl mb-4 border border-white/20">
-                        <i class="fas {{ $cfg['icon'] }} text-4xl"></i>
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-bold mb-2">{{ $cfg['title'] }}</h2>
-                    <p class="text-white/80 max-w-2xl mx-auto">{{ $cfg['subtitle'] }}</p>
-                </div>
-            </div>
-
-            <!-- Formulario -->
-            <div class="p-6 md:p-10">
-                
-                <!-- Mensajes de error -->
-                @if($errors->any())
-                    <div class="bg-red-500/10 border border-red-500/50 backdrop-blur-sm text-red-200 px-4 py-3 rounded-xl mb-6">
-                        <div class="flex items-start">
-                            <i class="fas fa-exclamation-circle mt-0.5 mr-3"></i>
-                            <div class="flex-1 text-sm space-y-1">
-                                @foreach($errors->all() as $error)
-                                    <p>• {{ $error }}</p>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                <form method="POST" action="{{ route('register') }}" class="space-y-6">
-                    @csrf
-                    <input type="hidden" name="role" value="{{ $role }}">
-
-                    <!-- Indicador de progreso -->
-                    <div class="bg-white/5 rounded-xl p-4 mb-6">
-                        <div class="flex items-center justify-between text-sm text-white/60 mb-2">
-                            <span>Completa tu perfil</span>
-                            <span id="progress-text">0%</span>
-                        </div>
-                        <div class="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                            <div id="progress-bar" class="bg-gradient-to-r {{ $cfg['gradient'] }} h-full transition-all duration-300" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Información Personal -->
-                    <div class="space-y-4">
-                        <h3 class="text-white font-semibold text-lg flex items-center">
-                            <div class="w-8 h-8 rounded-lg bg-{{ $cfg['accentColor'] }}-500/20 flex items-center justify-center mr-3">
-                                <i class="fas fa-user text-{{ $cfg['accentColor'] }}-400 text-sm"></i>
-                            </div>
-                            Información Personal
-                        </h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <!-- Nombre -->
-                            <div class="space-y-2">
-                                <label class="block text-white/90 font-medium text-sm" for="name">
-                                    <i class="fas fa-user mr-2 text-{{ $cfg['accentColor'] }}-400"></i> 
-                                    Nombre Completo
-                                </label>
-                                <input 
-                                    type="text" 
-                                    id="name" 
-                                    name="name" 
-                                    value="{{ old('name') }}" 
-                                    required 
-                                    class="register-input w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-{{ $cfg['accentColor'] }}-500 focus:border-transparent backdrop-blur-sm transition"
-                                    placeholder="Juan Pérez García"
-                                    autocomplete="name">
-                            </div>
-
-                            <!-- Documento -->
-                            <div class="space-y-2">
-                                <label class="block text-white/90 font-medium text-sm" for="documento">
-                                    <i class="fas fa-id-card mr-2 text-{{ $cfg['accentColor'] }}-400"></i> 
-                                    Documento de Identidad
-                                </label>
-                                <input 
-                                    type="text" 
-                                    id="documento" 
-                                    name="documento" 
-                                    value="{{ old('documento') }}" 
-                                    required 
-                                    class="register-input w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-{{ $cfg['accentColor'] }}-500 focus:border-transparent backdrop-blur-sm transition"
-                                    placeholder="1234567890">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Información de Contacto -->
-                    <div class="space-y-4">
-                        <h3 class="text-white font-semibold text-lg flex items-center">
-                            <div class="w-8 h-8 rounded-lg bg-{{ $cfg['accentColor'] }}-500/20 flex items-center justify-center mr-3">
-                                <i class="fas fa-envelope text-{{ $cfg['accentColor'] }}-400 text-sm"></i>
-                            </div>
-                            Información de Contacto
-                        </h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <!-- Email -->
-                            <div class="space-y-2">
-                                <label class="block text-white/90 font-medium text-sm" for="email">
-                                    <i class="fas fa-envelope mr-2 text-{{ $cfg['accentColor'] }}-400"></i> 
-                                    Correo Electrónico
-                                </label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    name="email" 
-                                    value="{{ old('email') }}" 
-                                    required 
-                                    class="register-input w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-{{ $cfg['accentColor'] }}-500 focus:border-transparent backdrop-blur-sm transition"
-                                    placeholder="correo@ejemplo.com"
-                                    autocomplete="email">
-                            </div>
-
-                            <!-- Teléfono -->
-                            <div class="space-y-2">
-                                <label class="block text-white/90 font-medium text-sm" for="telefono">
-                                    <i class="fas fa-phone mr-2 text-{{ $cfg['accentColor'] }}-400"></i> 
-                                    Teléfono
-                                </label>
-                                <input 
-                                    type="tel" 
-                                    id="telefono" 
-                                    name="telefono" 
-                                    value="{{ old('telefono') }}" 
-                                    required 
-                                    class="register-input w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-{{ $cfg['accentColor'] }}-500 focus:border-transparent backdrop-blur-sm transition"
-                                    placeholder="300 123 4567"
-                                    autocomplete="tel">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Seguridad -->
-                    <div class="space-y-4">
-                        <h3 class="text-white font-semibold text-lg flex items-center">
-                            <div class="w-8 h-8 rounded-lg bg-{{ $cfg['accentColor'] }}-500/20 flex items-center justify-center mr-3">
-                                <i class="fas fa-lock text-{{ $cfg['accentColor'] }}-400 text-sm"></i>
-                            </div>
-                            Seguridad de la Cuenta
-                        </h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <!-- Contraseña -->
-                            <div class="space-y-2">
-                                <label class="block text-white/90 font-medium text-sm" for="password">
-                                    <i class="fas fa-lock mr-2 text-{{ $cfg['accentColor'] }}-400"></i> 
-                                    Contraseña
-                                </label>
-                                <div class="relative">
-                                    <input 
-                                        type="password" 
-                                        id="password" 
-                                        name="password" 
-                                        required 
-                                        class="register-input w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-{{ $cfg['accentColor'] }}-500 focus:border-transparent backdrop-blur-sm transition"
-                                        placeholder="Mínimo 8 caracteres"
-                                        autocomplete="new-password">
-                                    <button type="button" onclick="togglePassword('password')" class="absolute inset-y-0 right-0 flex items-center pr-4 text-white/40 hover:text-white/60">
-                                        <i class="fas fa-eye" id="password-icon"></i>
-                                    </button>
-                                </div>
-                                <div class="flex items-center space-x-2 text-xs">
-                                    <div id="strength-bar" class="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
-                                        <div id="strength-fill" class="h-full transition-all duration-300" style="width: 0%"></div>
-                                    </div>
-                                    <span id="strength-text" class="text-white/50">Débil</span>
-                                </div>
-                            </div>
-
-                            <!-- Confirmar Contraseña -->
-                            <div class="space-y-2">
-                                <label class="block text-white/90 font-medium text-sm" for="password_confirmation">
-                                    <i class="fas fa-check-circle mr-2 text-{{ $cfg['accentColor'] }}-400"></i> 
-                                    Confirmar Contraseña
-                                </label>
-                                <div class="relative">
-                                    <input 
-                                        type="password" 
-                                        id="password_confirmation" 
-                                        name="password_confirmation" 
-                                        required 
-                                        class="register-input w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-{{ $cfg['accentColor'] }}-500 focus:border-transparent backdrop-blur-sm transition"
-                                        placeholder="Repite la contraseña"
-                                        autocomplete="new-password">
-                                    <button type="button" onclick="togglePassword('password_confirmation')" class="absolute inset-y-0 right-0 flex items-center pr-4 text-white/40 hover:text-white/60">
-                                        <i class="fas fa-eye" id="password_confirmation-icon"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Términos y Condiciones -->
-                    <div class="bg-white/5 rounded-xl p-4">
-                        <label class="flex items-start cursor-pointer group">
-                            <input type="checkbox" required class="mt-1 w-4 h-4 rounded border-white/20 bg-white/10 text-{{ $cfg['accentColor'] }}-500 focus:ring-{{ $cfg['accentColor'] }}-500 focus:ring-offset-0 transition">
-                            <span class="ml-3 text-sm text-white/70 group-hover:text-white/90 transition">
-                                Acepto los <a href="#" class="text-{{ $cfg['accentColor'] }}-400 hover:text-{{ $cfg['accentColor'] }}-300 underline">términos y condiciones</a> y la <a href="#" class="text-{{ $cfg['accentColor'] }}-400 hover:text-{{ $cfg['accentColor'] }}-300 underline">política de privacidad</a> de CaféTrace
-                            </span>
-                        </label>
-                    </div>
-
-                    <!-- Botón Submit -->
-                    <button type="submit" class="group relative w-full bg-gradient-to-r {{ $cfg['gradient'] }} hover:shadow-lg hover:shadow-{{ $cfg['accentColor'] }}-500/50 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] overflow-hidden">
-                        <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                        <span class="relative flex items-center justify-center">
-                            <i class="fas fa-user-plus mr-2"></i> 
-                            Crear Mi Cuenta
-                        </span>
-                    </button>
-
-                    <!-- Ya tienes cuenta -->
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-white/10"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-4 bg-transparent text-white/60">¿Ya tienes cuenta?</span>
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        <a href="{{ route('login.form', $role) }}" 
-                           class="inline-flex items-center justify-center w-full bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-semibold py-3.5 px-6 rounded-xl border border-white/20 transition-all duration-300 group">
-                            <i class="fas fa-sign-in-alt mr-2 group-hover:scale-110 transition-transform"></i> 
-                            Iniciar Sesión
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Info adicional -->
-        <div class="mt-6 text-center space-y-2">
-            <p class="text-white/50 text-sm">
-                <i class="fas fa-shield-alt mr-2"></i>
-                Todos tus datos están protegidos con encriptación de nivel bancario
-            </p>
-            <p class="text-white/40 text-xs">
-                Tu cuenta estará pendiente de aprobación por un administrador
-            </p>
-        </div>
-    </div>
-</div>
+@php
+$config = [
+    'caficultor' => [
+        'color'     => '#15803d',
+        'colorH'    => '#0f5c2e',
+        'colorSoft' => '#f0fdf4',
+        'colorText' => '#166534',
+        'icon'      => '🌱',
+        'label'     => 'Productor',
+        'badgeBg'   => '#dcfce7',
+        'badgeText' => '#14532d',
+        'ring'      => '#86efac',
+        'title'     => 'Únete como Caficultor',
+        'subtitle'  => 'Registra tu finca y comienza a vender directamente sin intermediarios.',
+        'left_h'    => 'Conecta tu finca con el mundo',
+        'left_desc' => 'Miles de compradores esperan café de calidad directamente desde el origen. Tú pones el café, nosotros la tecnología.',
+        'stats'     => [
+            ['icon'=>'🌿','title'=>'Sin intermediarios','sub'=>'Vende directo al comprador final'],
+            ['icon'=>'📈','title'=>'+175% más ingresos','sub'=>'Precio justo por tu trabajo'],
+            ['icon'=>'🔗','title'=>'Tu finca en blockchain','sub'=>'Trazabilidad inmutable de cada lote'],
+        ],
+    ],
+    'comprador' => [
+        'color'     => '#b45309',
+        'colorH'    => '#8b3a06',
+        'colorSoft' => '#fff7ed',
+        'colorText' => '#9a3412',
+        'icon'      => '☕',
+        'label'     => 'Consumidor',
+        'badgeBg'   => '#ffedd5',
+        'badgeText' => '#9a3412',
+        'ring'      => '#fdba74',
+        'title'     => 'Únete como Comprador',
+        'subtitle'  => 'Encuentra café de origen verificado con total transparencia y trazabilidad.',
+        'left_h'    => 'Café con historia y origen',
+        'left_desc' => 'Accede a los mejores cafés colombianos directamente desde la finca, con la certeza de que cada taza es auténtica.',
+        'stats'     => [
+            ['icon'=>'✅','title'=>'100% trazable','sub'=>'Conoce el origen exacto de tu café'],
+            ['icon'=>'🏆','title'=>'Calidad garantizada','sub'=>'Selección premium de fincas'],
+            ['icon'=>'🤝','title'=>'Apoyas al caficultor','sub'=>'Comercio justo y directo'],
+        ],
+    ],
+];
+$c = $config[$role];
+@endphp
 
 <style>
-    @keyframes blob {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        25% { transform: translate(20px, -50px) scale(1.1); }
-        50% { transform: translate(-20px, 20px) scale(0.9); }
-        75% { transform: translate(50px, 50px) scale(1.05); }
-    }
-    .animate-blob { animation: blob 7s infinite; }
-    .animation-delay-2000 { animation-delay: 2s; }
-    .animation-delay-4000 { animation-delay: 4s; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #fffbf5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.reg-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+}
+
+/* ===== PANEL IZQUIERDO ===== */
+.reg-left {
+  background: linear-gradient(160deg, #3b1a08 0%, #6b2f06 50%, #92400e 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(2rem, 4vw, 3rem);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+.reg-left::before {
+  content: '';
+  position: absolute;
+  width: 450px; height: 450px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  top: -150px; right: -150px;
+  pointer-events: none;
+}
+.reg-left::after {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  bottom: -80px; left: -60px;
+  pointer-events: none;
+}
+
+.left-top { position: relative; z-index: 1; }
+
+.left-logo {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+.left-logo-circle {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2.5px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.1);
+  flex-shrink: 0;
+}
+.left-logo-circle img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.left-logo-text { display: flex; flex-direction: column; line-height: 1.15; }
+.left-logo-name {
+  font-size: 1.2rem; font-weight: 800;
+  color: #fff; letter-spacing: -0.3px;
+}
+.left-logo-sub {
+  font-size: 0.57rem; color: rgba(255,255,255,0.5);
+  letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
+}
+
+.left-heading {
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 900; color: #fff; line-height: 1.25;
+  margin-bottom: 0.9rem;
+}
+.left-heading span { color: #fbbf24; }
+.left-desc {
+  font-size: clamp(0.8rem, 1.2vw, 0.88rem);
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7; max-width: 300px;
+}
+
+.left-stats {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.stat-item {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px; padding: 13px 16px;
+}
+.stat-icon { font-size: 1.2rem; flex-shrink: 0; }
+.stat-text p {
+  font-size: 0.8rem; font-weight: 700;
+  color: #fff; margin-bottom: 2px;
+}
+.stat-text small {
+  font-size: 0.68rem; color: rgba(255,255,255,0.5);
+}
+
+/* ===== PANEL DERECHO ===== */
+.reg-right {
+  background: #fffbf5;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 5vw, 4rem);
+  overflow-y: auto;
+  min-height: 100vh;
+}
+.reg-right-inner {
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: #9a7a5e; font-size: 0.85rem; font-weight: 600;
+  text-decoration: none; margin-bottom: 2rem;
+  transition: color 0.2s;
+}
+.back-link:hover { color: #6b2f06; }
+.back-arrow {
+  width: 32px; height: 32px;
+  border-radius: 10px; border: 1.5px solid #ede8e0;
+  background: #fff; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 0.85rem; transition: background 0.2s;
+}
+.back-link:hover .back-arrow { background: #f5ede0; }
+
+.form-header { margin-bottom: 2rem; }
+.role-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 14px; border-radius: 999px;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.form-title {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 900; color: #2d1b0e; line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+.form-subtitle {
+  font-size: 0.88rem; color: #9a7a5e; line-height: 1.6;
+}
+
+/* ===== PROGRESO ===== */
+.progress-wrap {
+  background: #fff;
+  border: 1px solid #ede8e0;
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 2rem;
+}
+.progress-top {
+  display: flex; justify-content: space-between;
+  font-size: 0.78rem; font-weight: 600;
+  color: #7c5a3c; margin-bottom: 8px;
+}
+.progress-track {
+  width: 100%; height: 6px;
+  background: #f0ebe3; border-radius: 999px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 999px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+/* ===== SECCIÓN ===== */
+.form-section {
+  margin-bottom: 2rem;
+}
+.section-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.88rem; font-weight: 800;
+  color: #2d1b0e; text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 1.1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1.5px solid #f0ebe3;
+}
+.section-icon {
+  width: 30px; height: 30px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.fields-grid.full { grid-template-columns: 1fr; }
+
+/* ===== FIELDS ===== */
+.field { display: flex; flex-direction: column; }
+.field-label {
+  font-size: 0.8rem; font-weight: 700;
+  color: #4a3020; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 5px;
+}
+.field-input {
+  width: 100%; padding: 11px 42px 11px 14px;
+  border: 1.5px solid #ede8e0; border-radius: 12px;
+  font-size: 0.88rem; color: #2d1b0e;
+  background: #fff; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+.field-input::placeholder { color: #c4b09a; }
+.field-input:focus {
+  border-color: var(--role-color);
+  box-shadow: 0 0 0 3px var(--role-ring);
+}
+.field-input.error {
+  border-color: #f87171;
+  box-shadow: 0 0 0 3px rgba(248,113,113,0.15);
+}
+.field-wrap { position: relative; }
+.field-suffix {
+  position: absolute; right: 13px; top: 50%;
+  transform: translateY(-50%);
+  color: #c4b09a; font-size: 0.82rem;
+  pointer-events: none;
+}
+.toggle-pw {
+  position: absolute; right: 13px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  color: #c4b09a; font-size: 0.85rem; padding: 4px;
+  transition: color 0.2s;
+}
+.toggle-pw:hover { color: #6b2f06; }
+
+/* ===== STRENGTH BAR ===== */
+.strength-wrap {
+  display: flex; align-items: center; gap: 8px; margin-top: 6px;
+}
+.strength-track {
+  flex: 1; height: 4px;
+  background: #f0ebe3; border-radius: 999px; overflow: hidden;
+}
+.strength-fill {
+  height: 100%; border-radius: 999px;
+  transition: width 0.3s, background-color 0.3s;
+  width: 0%;
+}
+.strength-label {
+  font-size: 0.7rem; font-weight: 700;
+  min-width: 60px; text-align: right;
+  color: #c4b09a;
+}
+
+/* ===== MATCH INDICATOR ===== */
+.match-msg {
+  font-size: 0.72rem; font-weight: 600;
+  margin-top: 5px; min-height: 16px;
+}
+
+/* ===== ALERTA ===== */
+.alert {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 16px; border-radius: 12px;
+  font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.5;
+}
+.alert-error { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; }
+.alert-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.alert ul { padding-left: 1rem; }
+.alert ul li { margin-bottom: 2px; }
+
+/* ===== TÉRMINOS ===== */
+.terms-box {
+  background: #fff; border: 1.5px solid #ede8e0;
+  border-radius: 14px; padding: 16px;
+  margin-bottom: 1.5rem;
+}
+.terms-label {
+  display: flex; align-items: flex-start;
+  gap: 10px; cursor: pointer;
+}
+.terms-label input[type="checkbox"] {
+  width: 17px; height: 17px; margin-top: 1px;
+  accent-color: var(--role-color); cursor: pointer; flex-shrink: 0;
+}
+.terms-label span {
+  font-size: 0.83rem; color: #7c5a3c; line-height: 1.6;
+}
+.terms-label a {
+  color: var(--role-color); font-weight: 600; text-decoration: none;
+}
+.terms-label a:hover { text-decoration: underline; }
+
+/* ===== PENDING NOTE ===== */
+.pending-note {
+  display: flex; align-items: center; gap: 8px;
+  background: #fefce8; border: 1px solid #fde68a;
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 0.78rem; color: #92400e; font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== BOTONES ===== */
+.btn-submit {
+  width: 100%; padding: 14px;
+  border: none; border-radius: 14px;
+  font-size: 0.95rem; font-weight: 800;
+  color: #fff; cursor: pointer;
+  transition: transform 0.15s, opacity 0.2s;
+  display: flex; align-items: center;
+  justify-content: center; gap: 8px;
+  letter-spacing: 0.3px; margin-bottom: 1.25rem;
+}
+.btn-submit:hover   { opacity: 0.9; transform: translateY(-1px); }
+.btn-submit:active  { transform: scale(0.98); }
+
+.divider {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 1.1rem;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: #ede8e0;
+}
+.divider span { font-size: 0.75rem; color: #c4b09a; font-weight: 600; }
+
+.btn-login {
+  width: 100%; padding: 13px; border-radius: 14px;
+  border: 1.5px solid #ede8e0; background: #fff;
+  font-size: 0.88rem; font-weight: 700; color: #4a3020;
+  text-decoration: none; display: flex;
+  align-items: center; justify-content: center; gap: 8px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-login:hover { background: #faf6f0; border-color: #d6c9bb; }
+
+.security-note {
+  margin-top: 1.5rem; text-align: center;
+  font-size: 0.75rem; color: #c4b09a;
+  display: flex; align-items: center;
+  justify-content: center; gap: 6px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .reg-page { grid-template-columns: 1fr; }
+  .reg-left  { display: none; }
+  .reg-right { min-height: 100vh; }
+  .reg-right-inner { max-width: 100%; }
+}
+@media (max-width: 560px) {
+  .fields-grid { grid-template-columns: 1fr; }
+}
 </style>
 
-<script>
-// Barra de progreso del formulario
-const inputs = document.querySelectorAll('.register-input');
-const progressBar = document.getElementById('progress-bar');
-const progressText = document.getElementById('progress-text');
+<div class="reg-page" style="--role-color:{{ $c['color'] }};--role-ring:{{ $c['ring'] }}33;">
 
-inputs.forEach(input => {
-    input.addEventListener('input', updateProgress);
-});
+  {{-- PANEL IZQUIERDO --}}
+  <div class="reg-left">
+    <div class="left-top">
+      <div class="left-logo">
+        <div class="left-logo-circle">
+          <img src="{{ asset('images/logo-cafetrace.png') }}" alt="CaféTrace">
+        </div>
+        <div class="left-logo-text">
+          <span class="left-logo-name">CaféTrace</span>
+          <span class="left-logo-sub">Del campesino al consumidor</span>
+        </div>
+      </div>
+      <h2 class="left-heading">{{ $c['left_h'] }}</h2>
+      <p class="left-desc">{{ $c['left_desc'] }}</p>
+    </div>
+    <div class="left-stats">
+      @foreach($c['stats'] as $s)
+        <div class="stat-item">
+          <span class="stat-icon">{{ $s['icon'] }}</span>
+          <div class="stat-text">
+            <p>{{ $s['title'] }}</p>
+            <small>{{ $s['sub'] }}</small>
+          </div>
+        </div>
+      @endforeach
+    </div>
+  </div>
+
+  {{-- PANEL DERECHO --}}
+  <div class="reg-right">
+    <div class="reg-right-inner">
+
+      <a href="{{ route('home') }}" class="back-link">
+        <span class="back-arrow">←</span>
+        Volver al inicio
+      </a>
+
+      <div class="form-header">
+        <div class="role-badge" style="background:{{ $c['badgeBg'] }};color:{{ $c['badgeText'] }};">
+          <span>{{ $c['icon'] }}</span> <span>{{ $c['label'] }}</span>
+        </div>
+        <h1 class="form-title">{{ $c['title'] }}</h1>
+        <p class="form-subtitle">{{ $c['subtitle'] }}</p>
+      </div>
+
+      {{-- Barra de progreso --}}
+      <div class="progress-wrap">
+        <div class="progress-top">
+          <span>Completando tu perfil</span>
+          <span id="progress-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="background:{{ $c['color'] }};"></div>
+        </div>
+      </div>
+
+      {{-- Errores --}}
+      @if($errors->any())
+        <div class="alert alert-error">
+          <span class="alert-icon">⚠</span>
+          <div>
+            <strong style="display:block;margin-bottom:4px;">Por favor corrige los siguientes errores:</strong>
+            <ul>
+              @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        </div>
+      @endif
+
+      <form method="POST" action="{{ route('register') }}" id="reg-form">
+        @csrf
+        <input type="hidden" name="role" value="{{ $role }}">
+
+        {{-- SECCIÓN 1: Personal --}}
+        <div class="form-section">
+          <div class="section-title">
+            <div class="section-icon" style="background:{{ $c['badgeBg'] }};color:{{ $c['badgeText'] }};">👤</div>
+            Información personal
+          </div>
+          <div class="fields-grid">
+            <div class="field">
+              <label class="field-label" for="name">
+                <span>✏</span> Nombre completo
+              </label>
+              <div class="field-wrap">
+                <input type="text" id="name" name="name"
+                       value="{{ old('name') }}"
+                       class="field-input reg-input" placeholder="Juan Pérez García"
+                       autocomplete="name" required>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="documento">
+                <span>🪪</span> Documento de identidad
+              </label>
+              <div class="field-wrap">
+                <input type="text" id="documento" name="documento"
+                       value="{{ old('documento') }}"
+                       class="field-input reg-input" placeholder="1234567890"
+                       required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{-- SECCIÓN 2: Contacto --}}
+        <div class="form-section">
+          <div class="section-title">
+            <div class="section-icon" style="background:{{ $c['badgeBg'] }};color:{{ $c['badgeText'] }};">✉</div>
+            Información de contacto
+          </div>
+          <div class="fields-grid">
+            <div class="field">
+              <label class="field-label" for="email">
+                <span>@</span> Correo electrónico
+              </label>
+              <div class="field-wrap">
+                <input type="email" id="email" name="email"
+                       value="{{ old('email') }}"
+                       class="field-input reg-input" placeholder="correo@ejemplo.com"
+                       autocomplete="email" required>
+                <span class="field-suffix">✉</span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="telefono">
+                <span>📞</span> Teléfono
+              </label>
+              <div class="field-wrap">
+                <input type="tel" id="telefono" name="telefono"
+                       value="{{ old('telefono') }}"
+                       class="field-input reg-input" placeholder="300 123 4567"
+                       autocomplete="tel" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{-- SECCIÓN 3: Seguridad --}}
+        <div class="form-section">
+          <div class="section-title">
+            <div class="section-icon" style="background:{{ $c['badgeBg'] }};color:{{ $c['badgeText'] }};">🔒</div>
+            Seguridad de la cuenta
+          </div>
+          <div class="fields-grid">
+            <div class="field">
+              <label class="field-label" for="password">
+                <span>🔑</span> Contraseña
+              </label>
+              <div class="field-wrap">
+                <input type="password" id="password" name="password"
+                       class="field-input reg-input" placeholder="Mínimo 8 caracteres"
+                       autocomplete="new-password" required>
+                <button type="button" class="toggle-pw" onclick="togglePw('password','eye1')" aria-label="Mostrar contraseña">
+                  <span id="eye1">👁</span>
+                </button>
+              </div>
+              <div class="strength-wrap">
+                <div class="strength-track">
+                  <div class="strength-fill" id="strength-fill"></div>
+                </div>
+                <span class="strength-label" id="strength-label">—</span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="password_confirmation">
+                <span>✅</span> Confirmar contraseña
+              </label>
+              <div class="field-wrap">
+                <input type="password" id="password_confirmation" name="password_confirmation"
+                       class="field-input reg-input" placeholder="Repite la contraseña"
+                       autocomplete="new-password" required>
+                <button type="button" class="toggle-pw" onclick="togglePw('password_confirmation','eye2')" aria-label="Mostrar contraseña">
+                  <span id="eye2">👁</span>
+                </button>
+              </div>
+              <div class="match-msg" id="match-msg"></div>
+            </div>
+          </div>
+        </div>
+
+        {{-- Nota aprobación --}}
+        <div class="pending-note">
+          <span>⏳</span>
+          Tu cuenta quedará pendiente de aprobación por un administrador antes de poder ingresar.
+        </div>
+
+        {{-- Términos --}}
+        <div class="terms-box">
+          <label class="terms-label">
+            <input type="checkbox" required>
+            <span>
+              Acepto los <a href="#">términos y condiciones</a> y la
+              <a href="#">política de privacidad</a> de CaféTrace.
+              Entiendo que mis datos serán tratados de forma segura.
+            </span>
+          </label>
+        </div>
+
+        {{-- Submit --}}
+        <button type="submit" class="btn-submit" style="background:{{ $c['color'] }};">
+          <span>＋</span> Crear mi cuenta
+        </button>
+
+        <div class="divider"><span>o</span></div>
+
+        <a href="{{ route('login.form', $role) }}" class="btn-login">
+          <span>→</span> Ya tengo cuenta, iniciar sesión
+        </a>
+
+      </form>
+
+      <div class="security-note">
+        <span>🔐</span> Datos protegidos con encriptación de nivel bancario
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===== PROGRESO =====
+const regInputs = document.querySelectorAll('.reg-input');
+const fill = document.getElementById('progress-fill');
+const pct  = document.getElementById('progress-pct');
 
 function updateProgress() {
-    const filled = Array.from(inputs).filter(input => input.value.trim() !== '').length;
-    const percentage = (filled / inputs.length) * 100;
-    progressBar.style.width = percentage + '%';
-    progressText.textContent = Math.round(percentage) + '%';
+  const filled = [...regInputs].filter(i => i.value.trim() !== '').length;
+  const p = Math.round((filled / regInputs.length) * 100);
+  fill.style.width = p + '%';
+  pct.textContent  = p + '%';
+}
+regInputs.forEach(i => i.addEventListener('input', updateProgress));
+
+// ===== TOGGLE PASSWORD =====
+function togglePw(id, eyeId) {
+  const input = document.getElementById(id);
+  const eye   = document.getElementById(eyeId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    eye.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    eye.textContent = '👁';
+  }
 }
 
-// Toggle password visibility
-function togglePassword(id) {
-    const input = document.getElementById(id);
-    const icon = document.getElementById(id + '-icon');
-    
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-    } else {
-        input.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
-    }
-}
+// ===== FORTALEZA CONTRASEÑA =====
+const pwInput       = document.getElementById('password');
+const strengthFill  = document.getElementById('strength-fill');
+const strengthLabel = document.getElementById('strength-label');
 
-// Password strength indicator
-const passwordInput = document.getElementById('password');
-const strengthFill = document.getElementById('strength-fill');
-const strengthText = document.getElementById('strength-text');
+const levels = [
+  { label: 'Muy débil', color: '#ef4444', w: '20%' },
+  { label: 'Débil',     color: '#f97316', w: '40%' },
+  { label: 'Media',     color: '#f59e0b', w: '60%' },
+  { label: 'Fuerte',    color: '#22c55e', w: '80%' },
+  { label: 'Muy fuerte',color: '#15803d', w: '100%'},
+];
 
-passwordInput.addEventListener('input', (e) => {
-    const password = e.target.value;
-    let strength = 0;
-    
-    if (password.length >= 8) strength++;
-    if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
-    if (password.match(/[0-9]/)) strength++;
-    if (password.match(/[^a-zA-Z0-9]/)) strength++;
-    
-    const colors = ['#ef4444', '#f59e0b', '#10b981', '#10b981'];
-    const texts = ['Débil', 'Media', 'Fuerte', 'Muy fuerte'];
-    const widths = ['25%', '50%', '75%', '100%'];
-    
-    strengthFill.style.width = widths[strength];
-    strengthFill.style.backgroundColor = colors[strength];
-    strengthText.textContent = texts[strength];
-    strengthText.style.color = colors[strength];
+pwInput.addEventListener('input', () => {
+  const v = pwInput.value;
+  let score = 0;
+  if (v.length >= 8)                        score++;
+  if (v.match(/[a-z]/) && v.match(/[A-Z]/)) score++;
+  if (v.match(/[0-9]/))                      score++;
+  if (v.match(/[^a-zA-Z0-9]/))              score++;
+  const idx = v.length === 0 ? -1 : Math.min(score, 4);
+  if (idx < 0) {
+    strengthFill.style.width = '0%';
+    strengthLabel.textContent = '—';
+    strengthLabel.style.color = '#c4b09a';
+  } else {
+    strengthFill.style.width           = levels[idx].w;
+    strengthFill.style.backgroundColor = levels[idx].color;
+    strengthLabel.textContent          = levels[idx].label;
+    strengthLabel.style.color          = levels[idx].color;
+  }
+  checkMatch();
 });
+
+// ===== MATCH CONTRASEÑAS =====
+const pwConf  = document.getElementById('password_confirmation');
+const matchMsg = document.getElementById('match-msg');
+
+function checkMatch() {
+  if (!pwConf.value) { matchMsg.textContent = ''; return; }
+  if (pwInput.value === pwConf.value) {
+    matchMsg.textContent = '✓ Las contraseñas coinciden';
+    matchMsg.style.color = '#15803d';
+  } else {
+    matchMsg.textContent = '✗ No coinciden aún';
+    matchMsg.style.color = '#ef4444';
+  }
+}
+pwConf.addEventListener('input', checkMatch);
 </script>
+
 @endsection
