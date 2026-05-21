@@ -3,207 +3,607 @@
 @section('title', 'Iniciar Sesión - ' . ucfirst($role))
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 py-12 relative overflow-hidden">
-    
-    <!-- Patrón de fondo animado -->
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
-    </div>
 
-    <!-- Elementos decorativos flotantes -->
-    <div class="absolute top-20 left-10 w-72 h-72 bg-amber-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
-    <div class="absolute top-40 right-10 w-72 h-72 bg-orange-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
-    <div class="absolute -bottom-20 left-40 w-72 h-72 bg-amber-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
-
-    <div class="w-full max-w-md relative z-10">
-        
-        <!-- Botón Volver -->
-        <a href="{{ route('home') }}" class="inline-flex items-center text-white/80 hover:text-white mb-8 transition group">
-            <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center mr-3 group-hover:bg-white/20 transition">
-                <i class="fas fa-arrow-left text-sm"></i>
-            </div>
-            <span class="font-medium">Volver al inicio</span>
-        </a>
-
-        <!-- Card Principal -->
-        <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20">
-            
-            @php
-                $config = [
-                    'administrador' => [
-                        'gradient' => 'from-blue-500 via-blue-600 to-blue-700',
-                        'icon' => 'fa-user-shield',
-                        'iconBg' => 'bg-blue-400/20',
-                        'accentColor' => 'blue'
-                    ],
-                    'caficultor' => [
-                        'gradient' => 'from-green-500 via-emerald-600 to-green-700',
-                        'icon' => 'fa-seedling',
-                        'iconBg' => 'bg-green-400/20',
-                        'accentColor' => 'green'
-                    ],
-                    'comprador' => [
-                        'gradient' => 'from-amber-500 via-orange-600 to-orange-700',
-                        'icon' => 'fa-shopping-cart',
-                        'iconBg' => 'bg-amber-400/20',
-                        'accentColor' => 'amber'
-                    ]
-                ];
-                $cfg = $config[$role];
-            @endphp
-
-            <!-- Header con efecto de vidrio -->
-            <div class="relative bg-gradient-to-br {{ $cfg['gradient'] }} p-8 text-white overflow-hidden">
-                <!-- Patrón decorativo -->
-                <div class="absolute inset-0 opacity-10">
-                    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M0 40L40 0H20L0 20M40 40V20L20 40\'/%3E%3C/g%3E%3C/svg%3E')"></div>
-                </div>
-                
-                <div class="relative text-center">
-                    <div class="inline-flex items-center justify-center w-20 h-20 {{ $cfg['iconBg'] }} backdrop-blur-sm rounded-2xl mb-4 border border-white/20">
-                        <i class="fas {{ $cfg['icon'] }} text-4xl"></i>
-                    </div>
-                    <h2 class="text-3xl font-bold mb-2">Bienvenido de nuevo</h2>
-                    <p class="text-white/80">Ingresa como <span class="font-semibold">{{ ucfirst($role) }}</span></p>
-                </div>
-            </div>
-
-            <!-- Formulario -->
-            <div class="p-8">
-                
-                <!-- Mensajes de error/éxito -->
-                @if($errors->any())
-                    <div class="bg-red-500/10 border border-red-500/50 backdrop-blur-sm text-red-200 px-4 py-3 rounded-xl mb-6">
-                        <div class="flex items-start">
-                            <i class="fas fa-exclamation-circle mt-0.5 mr-3"></i>
-                            <div class="flex-1">
-                                @foreach($errors->all() as $error)
-                                    <p class="text-sm">{{ $error }}</p>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                @if(session('success'))
-                    <div class="bg-green-500/10 border border-green-500/50 backdrop-blur-sm text-green-200 px-4 py-3 rounded-xl mb-6">
-                        <div class="flex items-start">
-                            <i class="fas fa-check-circle mt-0.5 mr-3"></i>
-                            <p class="text-sm">{{ session('success') }}</p>
-                        </div>
-                    </div>
-                @endif
-
-                <form method="POST" action="{{ route('login') }}" class="space-y-6">
-                    @csrf
-                    <input type="hidden" name="role" value="{{ $role }}">
-
-                    <!-- Email -->
-                    <div class="space-y-2">
-                        <label class="block text-white/90 font-medium text-sm" for="email">
-                            <i class="fas fa-envelope mr-2 text-{{ $cfg['accentColor'] }}-400"></i> 
-                            Correo Electrónico
-                        </label>
-                        <div class="relative">
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                value="{{ old('email') }}"
-                                required 
-                                class="w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-{{ $cfg['accentColor'] }}-500 focus:border-transparent backdrop-blur-sm transition"
-                                placeholder="tu@ejemplo.com"
-                                autocomplete="email">
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                                <i class="fas fa-at text-white/30"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Contraseña -->
-                    <div class="space-y-2">
-                        <label class="block text-white/90 font-medium text-sm" for="password">
-                            <i class="fas fa-lock mr-2 text-{{ $cfg['accentColor'] }}-400"></i> 
-                            Contraseña
-                        </label>
-                        <div class="relative">
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                required 
-                                class="w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-{{ $cfg['accentColor'] }}-500 focus:border-transparent backdrop-blur-sm transition"
-                                placeholder="••••••••"
-                                autocomplete="current-password">
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                                <i class="fas fa-key text-white/30"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Remember & Forgot -->
-                    <div class="flex items-center justify-between text-sm">
-                        <label class="flex items-center text-white/80 cursor-pointer group">
-                            <input type="checkbox" id="remember" name="remember" class="w-4 h-4 rounded border-white/20 bg-white/10 text-{{ $cfg['accentColor'] }}-500 focus:ring-{{ $cfg['accentColor'] }}-500 focus:ring-offset-0 transition">
-                            <span class="ml-2 group-hover:text-white transition">Recordarme</span>
-                        </label>
-                        <a href="#" class="text-{{ $cfg['accentColor'] }}-400 hover:text-{{ $cfg['accentColor'] }}-300 transition">
-                            ¿Olvidaste tu contraseña?
-                        </a>
-                    </div>
-
-                    <!-- Botón Submit -->
-                    <button type="submit" class="group relative w-full bg-gradient-to-r {{ $cfg['gradient'] }} hover:shadow-lg hover:shadow-{{ $cfg['accentColor'] }}-500/50 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] overflow-hidden">
-                        <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                        <span class="relative flex items-center justify-center">
-                            <i class="fas fa-sign-in-alt mr-2"></i> 
-                            Iniciar Sesión
-                        </span>
-                    </button>
-
-                    <!-- Link de registro -->
-                    @if($role !== 'administrador')
-                        <div class="relative">
-                            <div class="absolute inset-0 flex items-center">
-                                <div class="w-full border-t border-white/10"></div>
-                            </div>
-                            <div class="relative flex justify-center text-sm">
-                                <span class="px-4 bg-transparent text-white/60">o</span>
-                            </div>
-                        </div>
-
-                        <div class="text-center">
-                            <p class="text-white/70 mb-3">¿No tienes cuenta?</p>
-                            <a href="{{ route('register.form', $role) }}" 
-                               class="inline-flex items-center justify-center w-full bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-semibold py-3.5 px-6 rounded-xl border border-white/20 transition-all duration-300 group">
-                                <i class="fas fa-user-plus mr-2 group-hover:scale-110 transition-transform"></i> 
-                                Crear Cuenta Nueva
-                            </a>
-                        </div>
-                    @endif
-                </form>
-            </div>
-        </div>
-
-        <!-- Info adicional -->
-        <div class="mt-6 text-center">
-            <p class="text-white/50 text-sm">
-                <i class="fas fa-shield-alt mr-2"></i>
-                Conexión segura con encriptación SSL
-            </p>
-        </div>
-    </div>
-</div>
+@php
+$config = [
+    'administrador' => [
+        'color'    => '#1d4ed8',
+        'colorH'   => '#153eb3',
+        'colorSoft'=> '#eff6ff',
+        'colorText'=> '#1e40af',
+        'icon'     => '⚙️',
+        'label'    => 'Staff',
+        'badgeBg'  => '#dbeafe',
+        'badgeText'=> '#1e40af',
+        'ring'     => '#93c5fd',
+    ],
+    'caficultor' => [
+        'color'    => '#15803d',
+        'colorH'   => '#0f5c2e',
+        'colorSoft'=> '#f0fdf4',
+        'colorText'=> '#166534',
+        'icon'     => '🌱',
+        'label'    => 'Productor',
+        'badgeBg'  => '#dcfce7',
+        'badgeText'=> '#14532d',
+        'ring'     => '#86efac',
+    ],
+    'comprador' => [
+        'color'    => '#b45309',
+        'colorH'   => '#8b3a06',
+        'colorSoft'=> '#fff7ed',
+        'colorText'=> '#9a3412',
+        'icon'     => '☕',
+        'label'    => 'Consumidor',
+        'badgeBg'  => '#ffedd5',
+        'badgeText'=> '#9a3412',
+        'ring'     => '#fdba74',
+    ],
+];
+$c = $config[$role];
+@endphp
 
 <style>
-    @keyframes blob {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        25% { transform: translate(20px, -50px) scale(1.1); }
-        50% { transform: translate(-20px, 20px) scale(0.9); }
-        75% { transform: translate(50px, 50px) scale(1.05); }
-    }
-    .animate-blob { animation: blob 7s infinite; }
-    .animation-delay-2000 { animation-delay: 2s; }
-    .animation-delay-4000 { animation-delay: 4s; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #fffbf5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ===== PANEL IZQUIERDO ===== */
+.login-left {
+  background: linear-gradient(160deg, #3b1a08 0%, #6b2f06 50%, #92400e 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(2rem, 5vw, 3.5rem);
+  position: relative;
+  overflow: hidden;
+}
+.login-left::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  top: -150px;
+  right: -150px;
+}
+.login-left::after {
+  content: '';
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  bottom: -100px;
+  left: -80px;
+}
+
+.left-top { position: relative; z-index: 1; }
+
+.left-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: clamp(3rem, 8vw, 6rem);
+}
+.left-logo-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2.5px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.1);
+  flex-shrink: 0;
+}
+.left-logo-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.left-logo-text { display: flex; flex-direction: column; line-height: 1.15; }
+.left-logo-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+.left-logo-sub {
+  font-size: 0.58rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.left-heading {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.left-heading span { color: #fbbf24; }
+.left-desc {
+  font-size: clamp(0.85rem, 1.5vw, 0.95rem);
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
+  max-width: 340px;
+}
+
+.left-stats {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+.stat-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.stat-text p {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.stat-text small {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.5);
+}
+
+/* ===== PANEL DERECHO ===== */
+.login-right {
+  background: #fffbf5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  overflow-y: auto;
+}
+.login-form-wrap {
+  width: 100%;
+  max-width: 420px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #9a7a5e;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 2rem;
+  transition: color 0.2s;
+}
+.back-link:hover { color: #6b2f06; }
+.back-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1.5px solid #ede8e0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+.back-link:hover .back-arrow { background: #f5ede0; }
+
+.form-header { margin-bottom: 2rem; }
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.form-title {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 900;
+  color: #2d1b0e;
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+.form-subtitle {
+  font-size: 0.88rem;
+  color: #9a7a5e;
+  line-height: 1.6;
+}
+
+/* ===== ALERTAS ===== */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+.alert-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+.alert-success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #14532d;
+}
+.alert-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+/* ===== FORM FIELDS ===== */
+.field { margin-bottom: 1.25rem; }
+.field-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #4a3020;
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.field-label-icon { font-size: 0.85rem; }
+.field-input {
+  width: 100%;
+  padding: 12px 44px 12px 14px;
+  border: 1.5px solid #ede8e0;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: #2d1b0e;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+.field-input::placeholder { color: #c4b09a; }
+.field-input:focus {
+  border-color: var(--role-color);
+  box-shadow: 0 0 0 3px var(--role-ring);
+}
+.field-wrap {
+  position: relative;
+}
+.field-suffix {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #c4b09a;
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+/* ===== TOGGLE PASSWORD ===== */
+.toggle-pw {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #c4b09a;
+  font-size: 0.85rem;
+  padding: 4px;
+  transition: color 0.2s;
+  pointer-events: all;
+}
+.toggle-pw:hover { color: #6b2f06; }
+
+/* ===== REMEMBER / FORGOT ===== */
+.form-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.83rem;
+  color: #7c5a3c;
+  cursor: pointer;
+}
+.remember-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--role-color);
+  cursor: pointer;
+  border-radius: 4px;
+}
+.forgot-link {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--role-color);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.forgot-link:hover { opacity: 0.75; }
+
+/* ===== BOTÓN SUBMIT ===== */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.3px;
+  margin-bottom: 1.5rem;
+}
+.btn-submit:hover   { opacity: 0.9; transform: translateY(-1px); }
+.btn-submit:active  { transform: scale(0.98); }
+
+/* ===== DIVIDER ===== */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #ede8e0;
+}
+.divider span {
+  font-size: 0.75rem;
+  color: #c4b09a;
+  font-weight: 600;
+}
+
+/* ===== BOTÓN REGISTRO ===== */
+.btn-register {
+  width: 100%;
+  padding: 13px;
+  border-radius: 14px;
+  border: 1.5px solid #ede8e0;
+  background: #fff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #4a3020;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-register:hover {
+  background: #faf6f0;
+  border-color: #d6c9bb;
+}
+
+/* ===== SEGURIDAD ===== */
+.security-note {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #c4b09a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .login-page { grid-template-columns: 1fr; }
+  .login-left  { display: none; }
+  .login-right { min-height: 100vh; padding: 1.5rem 1.25rem; align-items: flex-start; }
+  .login-form-wrap { max-width: 100%; }
+}
 </style>
+
+<div class="login-page" style="--role-color: {{ $c['color'] }}; --role-ring: {{ $c['ring'] }}22;">
+
+  {{-- PANEL IZQUIERDO --}}
+  <div class="login-left">
+    <div class="left-top">
+      <div class="left-logo">
+        <div class="left-logo-circle">
+          <img src="{{ asset('images/logo-cafetrace.png') }}" alt="CaféTrace">
+        </div>
+        <div class="left-logo-text">
+          <span class="left-logo-name">CaféTrace</span>
+          <span class="left-logo-sub">Del campesino al consumidor</span>
+        </div>
+      </div>
+      <h1 class="left-heading">
+        Bienvenido de<br><span>vuelta</span> al campo
+      </h1>
+      <p class="left-desc">
+        La plataforma que conecta caficultores colombianos con compradores, directamente y sin intermediarios.
+      </p>
+    </div>
+    <div class="left-stats">
+      <div class="stat-item">
+        <span class="stat-icon">🔗</span>
+        <div class="stat-text">
+          <p>Blockchain verificado</p>
+          <small>Trazabilidad inmutable en cada lote</small>
+        </div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">🌿</span>
+        <div class="stat-text">
+          <p>Origen colombiano</p>
+          <small>Café 100% auténtico y certificado</small>
+        </div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">🛡️</span>
+        <div class="stat-text">
+          <p>Conexión segura</p>
+          <small>Encriptación SSL en todos los datos</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{-- PANEL DERECHO --}}
+  <div class="login-right">
+    <div class="login-form-wrap">
+
+      <a href="{{ route('home') }}" class="back-link">
+        <span class="back-arrow">←</span>
+        Volver al inicio
+      </a>
+
+      <div class="form-header">
+        <div class="role-badge" style="background:{{ $c['badgeBg'] }};color:{{ $c['badgeText'] }};">
+          <span>{{ $c['icon'] }}</span>
+          <span>{{ $c['label'] }}</span>
+        </div>
+        <h2 class="form-title">Inicia sesión</h2>
+        <p class="form-subtitle">Ingresa como <strong>{{ ucfirst($role) }}</strong> para continuar.</p>
+      </div>
+
+      {{-- Alertas --}}
+      @if($errors->any())
+        <div class="alert alert-error">
+          <span class="alert-icon">⚠</span>
+          <div>
+            @foreach($errors->all() as $error)
+              <p>{{ $error }}</p>
+            @endforeach
+          </div>
+        </div>
+      @endif
+
+      @if(session('success'))
+        <div class="alert alert-success">
+          <span class="alert-icon">✓</span>
+          <p>{{ session('success') }}</p>
+        </div>
+      @endif
+
+      <form method="POST" action="{{ route('login') }}">
+        @csrf
+        <input type="hidden" name="role" value="{{ $role }}">
+
+        {{-- Email --}}
+        <div class="field">
+          <label class="field-label" for="email">
+            <span class="field-label-icon">✉</span> Correo electrónico
+          </label>
+          <div class="field-wrap">
+            <input type="email" id="email" name="email"
+                   value="{{ old('email') }}"
+                   class="field-input"
+                   placeholder="tu@ejemplo.com"
+                   autocomplete="email"
+                   required>
+            <span class="field-suffix">@</span>
+          </div>
+        </div>
+
+        {{-- Contraseña --}}
+        <div class="field">
+          <label class="field-label" for="password">
+            <span class="field-label-icon">🔒</span> Contraseña
+          </label>
+          <div class="field-wrap">
+            <input type="password" id="password" name="password"
+                   class="field-input"
+                   placeholder="••••••••"
+                   autocomplete="current-password"
+                   required>
+            <button type="button" class="toggle-pw" onclick="togglePw()" aria-label="Mostrar contraseña">
+              <span id="pw-eye">👁</span>
+            </button>
+          </div>
+        </div>
+
+        {{-- Recordar / Olvidé --}}
+        <div class="form-meta">
+          <label class="remember-label">
+            <input type="checkbox" name="remember" id="remember">
+            Recordarme
+          </label>
+          <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        {{-- Submit --}}
+        <button type="submit" class="btn-submit" style="background:{{ $c['color'] }};">
+          <span>→</span> Iniciar sesión
+        </button>
+
+        {{-- Registro --}}
+        @if($role !== 'administrador')
+          <div class="divider"><span>o</span></div>
+          <a href="{{ route('register.form', $role) }}" class="btn-register">
+            <span>＋</span> Crear cuenta nueva
+          </a>
+        @endif
+
+      </form>
+
+      <div class="security-note">
+        <span>🔐</span> Conexión segura con encriptación SSL
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function togglePw() {
+  const input = document.getElementById('password');
+  const eye   = document.getElementById('pw-eye');
+  if (input.type === 'password') {
+    input.type = 'text';
+    eye.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    eye.textContent = '👁';
+  }
+}
+</script>
+
 @endsection
