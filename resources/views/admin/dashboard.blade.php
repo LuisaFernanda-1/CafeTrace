@@ -3,359 +3,477 @@
 @section('title', 'Dashboard Administrador')
 
 @section('content')
-<div class="min-h-screen bg-gray-50">
-    <!-- Navbar del Admin -->
-    <nav class="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <div class="bg-white/20 p-2 rounded-lg">
-                        <i class="fas fa-user-shield text-2xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold">Panel Administrativo</h1>
-                        <p class="text-sm text-blue-100">{{ auth()->user()->name }}</p>
-                    </div>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cafe-900:#2d1b0e;--cafe-800:#3b1a08;--cafe-700:#6b2f06;
+  --cafe-600:#92400e;--cafe-500:#b45309;--cafe-400:#d97706;
+  --cafe-200:#fde68a;--cafe-100:#fef3c7;--cafe-50:#fffbf5;
+  --cream:#faf6f0;--border:#ede8e0
+}
+.dash{background:var(--cafe-50);min-height:100vh;display:grid;grid-template-rows:auto auto 1fr}
+
+/* NAV */
+.nav{background:var(--cafe-800);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.nav-logo img{width:100%;height:100%;object-fit:cover}
+.nav-name{font-size:15px;font-weight:500;color:#fff}
+.nav-sub{font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:1.5px;text-transform:uppercase}
+.nav-links{display:flex;gap:4px}
+.nav-link{display:flex;align-items:center;gap:7px;padding:7px 14px;border-radius:8px;font-size:13px;color:rgba(255,255,255,0.65);transition:background 0.15s;text-decoration:none}
+.nav-link:hover{background:rgba(255,255,255,0.08);color:#fff}
+.nav-link.active{background:rgba(255,255,255,0.12);color:#fff}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-user{display:flex;align-items:center;gap:8px}
+.nav-avatar{width:32px;height:32px;border-radius:50%;background:var(--cafe-600);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#fff}
+.nav-username{font-size:13px;color:rgba(255,255,255,0.75)}
+.btn-logout{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.65);font-size:12px;cursor:pointer;transition:all 0.15s}
+.btn-logout:hover{background:rgba(255,255,255,0.08);color:#fff;border-color:rgba(255,255,255,0.35)}
+
+/* BANNER ALERT */
+.banner-alert{background:var(--cafe-700);padding:9px 28px;display:flex;align-items:center;gap:10px}
+.banner-alert i{font-size:15px;color:#fde68a}
+.banner-text{font-size:13px;color:rgba(255,255,255,0.85)}
+.banner-text strong{color:#fde68a}
+.banner-cta{margin-left:auto;padding:5px 14px;border-radius:7px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:12px;font-weight:500;cursor:pointer;transition:background 0.15s;text-decoration:none}
+.banner-cta:hover{background:rgba(255,255,255,0.25)}
+
+/* MOBILE NAV */
+.mobile-nav{display:none;background:var(--cafe-800);border-top:1px solid rgba(255,255,255,0.08);padding:10px 20px}
+.mobile-nav-inner{display:flex;justify-content:space-around}
+.mobile-link{display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,0.6);font-size:11px;text-decoration:none}
+.mobile-link i{font-size:20px}
+.mobile-link.active{color:#fde68a}
+
+/* MAIN */
+.main{padding:28px}
+.page-header{margin-bottom:24px}
+.page-title{font-size:20px;font-weight:500;color:var(--cafe-900)}
+.page-sub{font-size:13px;color:#9a7a5e;margin-top:3px}
+
+/* SUCCESS ALERT */
+.alert-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d;padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:#fff;border:0.5px solid var(--border);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.stat-top{display:flex;align-items:flex-start;justify-content:space-between}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.stat-icon i{font-size:20px}
+.stat-icon.blue{background:#e6f1fb;color:#185fa5}
+.stat-icon.green{background:#eaf3de;color:#3b6d11}
+.stat-icon.amber{background:#faeeda;color:#854f0b}
+.stat-icon.purple{background:#eeedfe;color:#534ab7}
+.stat-badge{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:500}
+.stat-badge.up{background:#eaf3de;color:#3b6d11}
+.stat-badge.warn{background:#faeeda;color:#854f0b}
+.stat-badge.red{background:#fcebeb;color:#a32d2d}
+.stat-val{font-size:26px;font-weight:500;color:var(--cafe-900);line-height:1}
+.stat-label{font-size:12px;color:#9a7a5e;margin-top:3px}
+.stat-sub{font-size:11px;color:#c4b09a}
+
+/* CONTENT GRID */
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+
+/* CARDS */
+.card{background:#fff;border:0.5px solid var(--border);border-radius:12px;overflow:hidden}
+.card-header{padding:16px 20px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:14px;font-weight:500;color:var(--cafe-900);display:flex;align-items:center;gap:8px}
+.card-title i{font-size:17px;color:#b45309}
+.card-link{font-size:12px;color:#b45309;display:flex;align-items:center;gap:4px;text-decoration:none}
+.card-link:hover{color:#854f0b}
+.card-body{padding:16px 20px}
+.card-empty{text-align:center;padding:32px 0;color:#9a7a5e;font-size:13px}
+.card-empty i{font-size:36px;color:#d6c9bb;display:block;margin-bottom:8px}
+
+/* USER ITEMS */
+.user-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;border:0.5px solid var(--border);margin-bottom:10px}
+.user-item:last-child{margin-bottom:0}
+.user-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--cafe-600),var(--cafe-900));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#fff;flex-shrink:0}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:13px;font-weight:500;color:var(--cafe-900)}
+.user-email{font-size:11px;color:#9a7a5e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-meta{display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap}
+.badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
+.badge-blue{background:#e6f1fb;color:#185fa5}
+.badge-green{background:#eaf3de;color:#3b6d11}
+.badge-amber{background:#faeeda;color:#854f0b}
+.badge-gray{background:#f1efe8;color:#5f5e5a}
+.time-label{font-size:10px;color:#c4b09a;display:flex;align-items:center;gap:3px}
+.time-label i{font-size:11px}
+.user-actions{display:flex;gap:6px;flex-shrink:0}
+.btn-approve{width:30px;height:30px;border-radius:8px;border:none;background:#eaf3de;color:#3b6d11;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+.btn-approve:hover{background:#c0dd97}
+.btn-reject{width:30px;height:30px;border-radius:8px;border:none;background:#fcebeb;color:#a32d2d;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+.btn-reject:hover{background:#f7c1c1}
+.btn-approve i,.btn-reject i{font-size:14px}
+
+/* LOTE ITEMS */
+.lote-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;border:0.5px solid var(--border);margin-bottom:10px}
+.lote-item:last-child{margin-bottom:0}
+.lote-thumb{width:48px;height:48px;border-radius:10px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,var(--cafe-400),var(--cafe-700));display:flex;align-items:center;justify-content:center}
+.lote-thumb img{width:100%;height:100%;object-fit:cover}
+.lote-thumb i{font-size:20px;color:rgba(255,255,255,0.85)}
+.lote-info{flex:1;min-width:0}
+.lote-name{font-size:13px;font-weight:500;color:var(--cafe-900)}
+.lote-code{font-size:11px;color:#9a7a5e}
+.lote-grower{font-size:11px;color:#c4b09a;display:flex;align-items:center;gap:3px;margin-top:2px}
+.lote-grower i{font-size:11px}
+.lote-price{text-align:right;flex-shrink:0}
+.lote-val{font-size:14px;font-weight:500;color:var(--cafe-600)}
+.lote-kg{font-size:11px;color:#9a7a5e}
+
+/* BOTTOM GRID */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.mini-card{background:#fff;border:0.5px solid var(--border);border-radius:12px;padding:18px 20px}
+.mini-title{font-size:13px;font-weight:500;color:var(--cafe-900);display:flex;align-items:center;gap:7px;margin-bottom:14px}
+.mini-title i{font-size:16px;color:#b45309}
+.mini-link{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:9px;border:0.5px solid var(--border);font-size:12px;color:var(--cafe-800);text-decoration:none;transition:background 0.15s;margin-bottom:8px}
+.mini-link:last-child{margin-bottom:0}
+.mini-link:hover{background:var(--cream)}
+.mini-link i{font-size:15px;color:#b45309}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:12px}
+.summary-row:last-child{border-bottom:none}
+.summary-label{color:#9a7a5e}
+.summary-val{font-weight:500;color:var(--cafe-900)}
+.status-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:12px}
+.status-row:last-child{border-bottom:none}
+.status-label{color:#9a7a5e}
+.status-ok{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:#3b6d11}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#639922}
+.status-time{font-size:11px;color:#c4b09a}
+
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .content-grid{grid-template-columns:1fr}
+  .bottom-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .nav-links{display:none}
+  .nav-username{display:none}
+  .mobile-nav{display:block}
+  .main{padding:16px}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+}
+</style>
+
+<div class="dash">
+
+  {{-- NAVBAR --}}
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="nav-logo">
+        <img src="{{ asset('images/logo-cafetrace.png') }}" alt="CaféTrace">
+      </div>
+      <div>
+        <div class="nav-name">CaféTrace</div>
+        <div class="nav-sub">Panel administrativo</div>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <a href="{{ route('admin.dashboard') }}" class="nav-link active">
+        <i class="fas fa-th-large"></i> Dashboard
+      </a>
+      <a href="{{ route('admin.usuarios') }}" class="nav-link">
+        <i class="fas fa-users"></i> Usuarios
+      </a>
+      <a href="{{ route('admin.lotes') }}" class="nav-link">
+        <i class="fas fa-box"></i> Lotes
+      </a>
+      <a href="{{ route('admin.transacciones') }}" class="nav-link">
+        <i class="fas fa-receipt"></i> Transacciones
+      </a>
+    </div>
+
+    <div class="nav-right">
+      <div class="nav-user">
+        <div class="nav-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
+        <span class="nav-username">{{ auth()->user()->name }}</span>
+      </div>
+      <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="btn-logout">
+          <i class="fas fa-sign-out-alt"></i> Salir
+        </button>
+      </form>
+    </div>
+  </nav>
+
+  {{-- MOBILE NAV --}}
+  <div class="mobile-nav">
+    <div class="mobile-nav-inner">
+      <a href="{{ route('admin.dashboard') }}" class="mobile-link active">
+        <i class="fas fa-th-large"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="{{ route('admin.usuarios') }}" class="mobile-link">
+        <i class="fas fa-users"></i>
+        <span>Usuarios</span>
+      </a>
+      <a href="{{ route('admin.lotes') }}" class="mobile-link">
+        <i class="fas fa-box"></i>
+        <span>Lotes</span>
+      </a>
+    </div>
+  </div>
+
+  {{-- BANNER PENDIENTES --}}
+  @if($usuariosPendientes > 0)
+    <div class="banner-alert">
+      <i class="fas fa-exclamation-circle"></i>
+      <span class="banner-text">
+        <strong>{{ $usuariosPendientes }} {{ $usuariosPendientes == 1 ? 'usuario pendiente' : 'usuarios pendientes' }}</strong>
+        de aprobación están esperando revisión
+      </span>
+      <a href="{{ route('admin.usuarios') }}" class="banner-cta">Revisar ahora</a>
+    </div>
+  @endif
+
+  <div class="main">
+
+    {{-- ALERTA SUCCESS --}}
+    @if(session('success'))
+      <div class="alert-success">
+        <i class="fas fa-check-circle"></i>
+        {{ session('success') }}
+      </div>
+    @endif
+
+    {{-- ENCABEZADO --}}
+    <div class="page-header">
+      <h1 class="page-title">Buenos días, {{ auth()->user()->name }}</h1>
+      <p class="page-sub">Panel de control y gestión de CaféTrace · {{ now()->format('d/m/Y H:i') }}</p>
+    </div>
+
+    {{-- STATS --}}
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+          @if($usuariosPendientes > 0)
+            <span class="stat-badge red">{{ $usuariosPendientes }} pendientes</span>
+          @endif
+        </div>
+        <div>
+          <div class="stat-val">{{ $totalUsuarios }}</div>
+          <div class="stat-label">Total usuarios</div>
+          <div class="stat-sub">{{ $totalCaficultores }} caficultores · {{ $totalCompradores }} compradores</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon green"><i class="fas fa-box"></i></div>
+          <span class="stat-badge up">{{ $lotesDisponibles }} activos</span>
+        </div>
+        <div>
+          <div class="stat-val">{{ $totalLotes }}</div>
+          <div class="stat-label">Total lotes</div>
+          <div class="stat-sub">{{ $lotesDisponibles }} disponibles</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon amber"><i class="fas fa-weight"></i></div>
+          <span class="stat-badge warn">
+            @if($totalKgRegistrados > 0)
+              {{ round(($totalKgDisponibles / $totalKgRegistrados) * 100) }}% disp.
+            @else
+              0%
+            @endif
+          </span>
+        </div>
+        <div>
+          <div class="stat-val">{{ number_format($totalKgRegistrados, 0) }}</div>
+          <div class="stat-label">Kg registrados</div>
+          <div class="stat-sub">{{ number_format($totalKgDisponibles, 0) }} disponibles</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon purple"><i class="fas fa-exchange-alt"></i></div>
+        </div>
+        <div>
+          <div class="stat-val">{{ $totalTransacciones }}</div>
+          <div class="stat-label">Transacciones</div>
+          <div class="stat-sub">${{ number_format($comisionesTotales, 0) }} comisión total</div>
+        </div>
+      </div>
+
+    </div>
+
+    {{-- USUARIOS + LOTES --}}
+    <div class="content-grid">
+
+      {{-- Usuarios pendientes --}}
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">
+            <i class="fas fa-user-check"></i> Usuarios pendientes
+          </span>
+          <a href="{{ route('admin.usuarios') }}" class="card-link">
+            Ver todos <i class="fas fa-arrow-right" style="font-size:11px"></i>
+          </a>
+        </div>
+        <div class="card-body">
+          @if($usuariosPendientesLista->count() > 0)
+            @foreach($usuariosPendientesLista as $usuario)
+              <div class="user-item">
+                <div class="user-avatar">{{ substr($usuario->name, 0, 1) }}</div>
+                <div class="user-info">
+                  <div class="user-name">{{ $usuario->name }}</div>
+                  <div class="user-email">{{ $usuario->email }}</div>
+                  <div class="user-meta">
+                    @if($usuario->role)
+                      @php
+                        $rol = strtolower($usuario->role->nombre);
+                        $badgeClass = $rol === 'caficultor' ? 'badge-green' : ($rol === 'comprador' ? 'badge-amber' : 'badge-blue');
+                      @endphp
+                      <span class="badge {{ $badgeClass }}">{{ ucfirst($usuario->role->nombre) }}</span>
+                    @else
+                      <span class="badge badge-gray">Sin rol</span>
+                    @endif
+                    <span class="time-label">
+                      <i class="fas fa-clock"></i>
+                      {{ $usuario->created_at->diffForHumans() }}
+                    </span>
+                  </div>
                 </div>
-                <!-- Menu Desktop -->
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="{{ route('admin.dashboard') }}" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition">
-                        <i class="fas fa-home mr-2"></i> Dashboard
-                    </a>
-                    <a href="{{ route('admin.usuarios') }}" class="hover:text-blue-200 transition">
-                        <i class="fas fa-users mr-2"></i> Usuarios
-                    </a>
-                    <a href="{{ route('admin.lotes') }}" class="hover:text-blue-200 transition">
-                        <i class="fas fa-box mr-2"></i> Lotes
-                    </a>
-                </div>
-                <form method="POST" action="{{ route('logout') }}">
+                <div class="user-actions">
+                  <form method="POST" action="{{ route('admin.usuarios.aprobar', $usuario->id) }}">
                     @csrf
-                    <button type="submit" class="bg-blue-700 hover:bg-blue-900 px-4 py-2 rounded-lg transition">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
+                    <button type="submit" class="btn-approve"
+                            onclick="return confirm('¿Aprobar a {{ $usuario->name }}?')"
+                            title="Aprobar">
+                      <i class="fas fa-check"></i>
                     </button>
-                </form>
+                  </form>
+                  <form method="POST" action="{{ route('admin.usuarios.rechazar', $usuario->id) }}">
+                    @csrf
+                    <button type="submit" class="btn-reject"
+                            onclick="return confirm('¿Rechazar a {{ $usuario->name }}?')"
+                            title="Rechazar">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            @endforeach
+          @else
+            <div class="card-empty">
+              <i class="fas fa-check-circle"></i>
+              No hay usuarios pendientes de aprobación
             </div>
+          @endif
         </div>
-    </nav>
+      </div>
 
-    <!-- Menu Mobile -->
-    <div class="md:hidden bg-blue-600 border-t border-blue-500">
-        <div class="container mx-auto px-4 py-3 flex justify-around text-white text-sm">
-            <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center text-blue-200">
-                <i class="fas fa-home text-xl mb-1"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="{{ route('admin.usuarios') }}" class="flex flex-col items-center">
-                <i class="fas fa-users text-xl mb-1"></i>
-                <span>Usuarios</span>
-            </a>
-            <a href="{{ route('admin.lotes') }}" class="flex flex-col items-center">
-                <i class="fas fa-box text-xl mb-1"></i>
-                <span>Lotes</span>
-            </a>
+      {{-- Últimos lotes --}}
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">
+            <i class="fas fa-box"></i> Últimos lotes
+          </span>
+          <a href="{{ route('admin.lotes') }}" class="card-link">
+            Ver todos <i class="fas fa-arrow-right" style="font-size:11px"></i>
+          </a>
         </div>
+        <div class="card-body">
+          @if($ultimosLotes->count() > 0)
+            @foreach($ultimosLotes as $lote)
+              <div class="lote-item">
+                <div class="lote-thumb">
+                  @if($lote->imagenes->first())
+                    <img src="{{ asset('storage/' . $lote->imagenes->first()->ruta_imagen) }}"
+                         alt="{{ $lote->codigo_lote }}">
+                  @else
+                    <i class="fas fa-coffee"></i>
+                  @endif
+                </div>
+                <div class="lote-info">
+                  <div class="lote-name">{{ $lote->variedad }}</div>
+                  <div class="lote-code">{{ $lote->codigo_lote }}</div>
+                  @if($lote->caficultor)
+                    <div class="lote-grower">
+                      <i class="fas fa-user"></i> {{ $lote->caficultor->name }}
+                    </div>
+                  @endif
+                </div>
+                <div class="lote-price">
+                  <div class="lote-val">${{ number_format($lote->precio_por_kg, 0) }}/kg</div>
+                  <div class="lote-kg">{{ number_format($lote->peso_disponible, 0) }} kg disp.</div>
+                </div>
+              </div>
+            @endforeach
+          @else
+            <div class="card-empty">
+              <i class="fas fa-box-open"></i>
+              No hay lotes registrados
+            </div>
+          @endif
+        </div>
+      </div>
+
     </div>
 
-    <!-- Contenido Principal -->
-    <div class="container mx-auto px-4 py-8">
-        <!-- Alertas -->
-        @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
-                <i class="fas fa-check-circle mr-2"></i>{{ session('success') }}
-            </div>
-        @endif
+    {{-- BOTTOM: ACCESO RÁPIDO + RESUMEN + ESTADO --}}
+    <div class="bottom-grid">
 
-        <!-- Mensaje de Bienvenida -->
-        <div class="bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-2xl shadow-lg p-8 mb-8">
-            <div class="flex items-center justify-between flex-wrap gap-4">
-                <div>
-                    <h2 class="text-3xl font-bold mb-2">¡Bienvenido, Administrador! 👋</h2>
-                    <p class="text-blue-100">Panel de control y gestión de CaféTrace</p>
-                </div>
-                @if($usuariosPendientes > 0)
-                    <a href="{{ route('admin.usuarios') }}" 
-                       class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition">
-                        <i class="fas fa-exclamation-circle mr-2"></i>
-                        {{ $usuariosPendientes }} {{ $usuariosPendientes == 1 ? 'usuario pendiente' : 'usuarios pendientes' }}
-                    </a>
-                @endif
-            </div>
+      <div class="mini-card">
+        <div class="mini-title"><i class="fas fa-bolt"></i> Acceso rápido</div>
+        <a href="{{ route('admin.usuarios') }}" class="mini-link">
+          <i class="fas fa-users"></i> Gestionar usuarios
+        </a>
+        <a href="{{ route('admin.lotes') }}" class="mini-link">
+          <i class="fas fa-box"></i> Gestionar lotes
+        </a>
+      </div>
+
+      <div class="mini-card">
+        <div class="mini-title"><i class="fas fa-chart-line"></i> Resumen</div>
+        <div class="summary-row">
+          <span class="summary-label">Caficultores activos</span>
+          <span class="summary-val">{{ $totalCaficultores }}</span>
         </div>
-
-        <!-- Estadísticas Principales -->
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Total Usuarios -->
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm font-medium">Total Usuarios</p>
-                        <p class="text-3xl font-bold text-blue-600 mt-1">{{ $totalUsuarios }}</p>
-                        <p class="text-xs text-gray-500 mt-1">
-                            <i class="fas fa-users mr-1"></i>
-                            {{ $totalCaficultores }} caficultores, {{ $totalCompradores }} compradores
-                        </p>
-                    </div>
-                    <div class="bg-blue-100 p-4 rounded-xl">
-                        <i class="fas fa-users text-3xl text-blue-600"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Lotes -->
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm font-medium">Total Lotes</p>
-                        <p class="text-3xl font-bold text-green-600 mt-1">{{ $totalLotes }}</p>
-                        <p class="text-xs text-gray-500 mt-1">
-                            <i class="fas fa-check-circle mr-1"></i>
-                            {{ $lotesDisponibles }} disponibles
-                        </p>
-                    </div>
-                    <div class="bg-green-100 p-4 rounded-xl">
-                        <i class="fas fa-box text-3xl text-green-600"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Kg Registrados -->
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-amber-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm font-medium">Kg Registrados</p>
-                        <p class="text-3xl font-bold text-amber-600 mt-1">{{ number_format($totalKgRegistrados, 0) }}</p>
-                        <p class="text-xs text-gray-500 mt-1">
-                            <i class="fas fa-box-open mr-1"></i>
-                            {{ number_format($totalKgDisponibles, 0) }} disponibles
-                        </p>
-                    </div>
-                    <div class="bg-amber-100 p-4 rounded-xl">
-                        <i class="fas fa-weight text-3xl text-amber-600"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Transacciones -->
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm font-medium">Transacciones</p>
-                        <p class="text-3xl font-bold text-purple-600 mt-1">{{ $totalTransacciones }}</p>
-                        <p class="text-xs text-gray-500 mt-1">
-                            <i class="fas fa-dollar-sign mr-1"></i>
-                            ${{ number_format($comisionesTotales, 0) }} comisión
-                        </p>
-                    </div>
-                    <div class="bg-purple-100 p-4 rounded-xl">
-                        <i class="fas fa-exchange-alt text-3xl text-purple-600"></i>
-                    </div>
-                </div>
-            </div>
+        <div class="summary-row">
+          <span class="summary-label">Compradores activos</span>
+          <span class="summary-val">{{ $totalCompradores }}</span>
         </div>
-
-        <div class="grid lg:grid-cols-2 gap-6">
-            <!-- Usuarios Pendientes de Aprobación -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-user-clock text-amber-500 mr-3"></i>
-                        Usuarios Pendientes
-                    </h3>
-                    <a href="{{ route('admin.usuarios') }}" class="text-blue-600 hover:text-blue-700 font-semibold text-sm">
-                        Ver todos <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-
-                @if($usuariosPendientesLista->count() > 0)
-                    <div class="space-y-4">
-                        @foreach($usuariosPendientesLista as $usuario)
-                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex-1">
-                                        <div class="flex items-center mb-2">
-                                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-white font-bold mr-3">
-                                                {{ substr($usuario->name, 0, 1) }}
-                                            </div>
-                                            <div>
-                                                <p class="font-bold text-gray-900">{{ $usuario->name }}</p>
-                                                <p class="text-sm text-gray-600">{{ $usuario->email }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center gap-3 text-sm text-gray-600 ml-13">
-                                            @if($usuario->role)
-                                                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
-                                                    {{ ucfirst($usuario->role->nombre) }}
-                                                </span>
-                                            @else
-                                                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-semibold">
-                                                    Sin rol asignado
-                                                </span>
-                                            @endif
-                                            <span class="text-xs">
-                                                <i class="fas fa-calendar mr-1"></i>
-                                                {{ $usuario->created_at->diffForHumans() }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="flex gap-2 ml-4">
-                                        <form method="POST" action="{{ route('admin.usuarios.aprobar', $usuario->id) }}">
-                                            @csrf
-                                            <button type="submit" 
-                                                    class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm transition"
-                                                    title="Aprobar"
-                                                    onclick="return confirm('¿Aprobar este usuario?')">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                        </form>
-                                        <form method="POST" action="{{ route('admin.usuarios.rechazar', $usuario->id) }}">
-                                            @csrf
-                                            <button type="submit" 
-                                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm transition"
-                                                    title="Rechazar"
-                                                    onclick="return confirm('¿Rechazar este usuario?')">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <div class="text-center py-8">
-                        <i class="fas fa-check-circle text-5xl text-green-500 mb-3"></i>
-                        <p class="text-gray-600">No hay usuarios pendientes de aprobación</p>
-                    </div>
-                @endif
-            </div>
-
-            <!-- Últimos Lotes Registrados -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-box text-green-500 mr-3"></i>
-                        Últimos Lotes
-                    </h3>
-                    <a href="{{ route('admin.lotes') }}" class="text-blue-600 hover:text-blue-700 font-semibold text-sm">
-                        Ver todos <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-
-                @if($ultimosLotes->count() > 0)
-                    <div class="space-y-4">
-                        @foreach($ultimosLotes as $lote)
-                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                                <div class="flex items-start gap-4">
-                                    <!-- Miniatura -->
-                                    <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
-                                        @if($lote->imagenes->first())
-                                            <img src="{{ asset('storage/' . $lote->imagenes->first()->ruta_imagen) }}" 
-                                                 alt="{{ $lote->codigo_lote }}"
-                                                 class="w-full h-full object-cover">
-                                        @else
-                                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-600">
-                                                <i class="fas fa-coffee text-2xl text-white"></i>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    
-                                    <div class="flex-1">
-                                        <div class="flex items-start justify-between">
-                                            <div>
-                                                <p class="font-bold text-gray-900">{{ $lote->variedad }}</p>
-                                                <p class="text-sm text-gray-600">{{ $lote->codigo_lote }}</p>
-                                                @if($lote->caficultor)
-                                                    <p class="text-xs text-gray-500 mt-1">
-                                                        <i class="fas fa-user mr-1"></i>{{ $lote->caficultor->name }}
-                                                    </p>
-                                                @endif
-                                            </div>
-                                            <div class="text-right">
-                                                <p class="font-bold text-amber-600">${{ number_format($lote->precio_por_kg, 0) }}/kg</p>
-                                                <p class="text-xs text-gray-600">{{ number_format($lote->peso_disponible, 0) }} kg</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <div class="text-center py-8">
-                        <i class="fas fa-box-open text-5xl text-gray-300 mb-3"></i>
-                        <p class="text-gray-600">No hay lotes registrados</p>
-                    </div>
-                @endif
-            </div>
+        <div class="summary-row">
+          <span class="summary-label">Lotes disponibles</span>
+          <span class="summary-val">{{ $lotesDisponibles }}</span>
         </div>
-
-        <!-- Información Adicional -->
-        <div class="mt-8 grid md:grid-cols-3 gap-6">
-            <!-- Acceso Rápido -->
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg p-6 border border-blue-200">
-                <h4 class="font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-bolt text-blue-600 mr-2"></i>
-                    Acceso Rápido
-                </h4>
-                <div class="space-y-2">
-                    <a href="{{ route('admin.usuarios') }}" class="block bg-white hover:bg-blue-50 px-4 py-3 rounded-lg transition text-sm">
-                        <i class="fas fa-users text-blue-600 mr-2"></i> Gestionar Usuarios
-                    </a>
-                    <a href="{{ route('admin.lotes') }}" class="block bg-white hover:bg-blue-50 px-4 py-3 rounded-lg transition text-sm">
-                        <i class="fas fa-box text-blue-600 mr-2"></i> Gestionar Lotes
-                    </a>
-                </div>
-            </div>
-
-            <!-- Resumen Rápido -->
-            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-lg p-6 border border-green-200">
-                <h4 class="font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-chart-line text-green-600 mr-2"></i>
-                    Resumen
-                </h4>
-                <div class="space-y-3 text-sm">
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Caficultores activos:</span>
-                        <span class="font-bold text-gray-800">{{ $totalCaficultores }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Compradores activos:</span>
-                        <span class="font-bold text-gray-800">{{ $totalCompradores }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Lotes disponibles:</span>
-                        <span class="font-bold text-gray-800">{{ $lotesDisponibles }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Estado del Sistema -->
-            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-lg p-6 border border-purple-200">
-                <h4 class="font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-server text-purple-600 mr-2"></i>
-                    Estado del Sistema
-                </h4>
-                <div class="space-y-3 text-sm">
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-600">Base de datos:</span>
-                        <span class="px-2 py-1 bg-green-500 text-white rounded-full text-xs font-bold">
-                            <i class="fas fa-check-circle"></i> Activa
-                        </span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-600">Servidor:</span>
-                        <span class="px-2 py-1 bg-green-500 text-white rounded-full text-xs font-bold">
-                            <i class="fas fa-check-circle"></i> Online
-                        </span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-600">Última actualización:</span>
-                        <span class="text-gray-800 font-bold">{{ now()->format('d/m/Y H:i') }}</span>
-                    </div>
-                </div>
-            </div>
+        <div class="summary-row">
+          <span class="summary-label">Pendientes aprobación</span>
+          <span class="summary-val" style="{{ $usuariosPendientes > 0 ? 'color:#854f0b' : '' }}">
+            {{ $usuariosPendientes }}
+          </span>
         </div>
+      </div>
+
+      <div class="mini-card">
+        <div class="mini-title"><i class="fas fa-server"></i> Estado del sistema</div>
+        <div class="status-row">
+          <span class="status-label">Base de datos</span>
+          <span class="status-ok"><span class="status-dot"></span> Activa</span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">Servidor</span>
+          <span class="status-ok"><span class="status-dot"></span> Online</span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">Última actualización</span>
+          <span class="status-time">{{ now()->format('d/m/Y H:i') }}</span>
+        </div>
+      </div>
+
     </div>
+  </div>
 </div>
+
 @endsection

@@ -3,187 +3,153 @@
 @section('title', 'Código QR - ' . $lote->codigo_lote)
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
-    <!-- Navbar -->
-    <nav class="bg-gradient-to-r from-green-600 to-emerald-700 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('caficultor.dashboard') }}" class="bg-white/20 p-2 rounded-lg hover:bg-white/30 transition">
-                        <i class="fas fa-arrow-left text-xl"></i>
-                    </a>
-                    <div>
-                        <h1 class="text-xl font-bold">Código QR - {{ $lote->codigo_lote }}</h1>
-                        <p class="text-sm text-green-100">{{ auth()->user()->name }}</p>
-                    </div>
-                </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="bg-green-700 hover:bg-green-900 px-4 py-2 rounded-lg transition">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Salir
-                    </button>
-                </form>
-            </div>
-        </div>
-    </nav>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g900:#0d2e0a;--g800:#1a4a14;--g700:#246019;--g600:#2d7a1f;--g500:#3d9e2a;--g400:#5ab83a;--g300:#8dd468;--g100:#e8f5e0;--g50:#f4fbee;--amber:#c47c0a;--amber-bg:#fef3d6;--cream:#fafaf7;--white:#ffffff;--border:#e4e8df;--text:#1a2416;--muted:#5a6e52;--hint:#9aac8e}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text)}
+.nav{background:var(--g800);height:60px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.07)}
+.nav-brand{display:flex;align-items:center;gap:11px}
+.nav-logo{width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.nav-logo img{width:100%;height:100%;object-fit:cover}
+.nav-name{font-size:15px;font-weight:500;color:#fff}
+.nav-sub{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1.5px;text-transform:uppercase}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.btn-back{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:8px;font-size:13px;color:rgba(255,255,255,0.65);background:rgba(255,255,255,0.07);text-decoration:none;transition:all 0.15s}
+.btn-back:hover{background:rgba(255,255,255,0.12);color:#fff}
+.btn-logout{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.55);font-size:12px;cursor:pointer;transition:all 0.15s;font-family:inherit}
+.btn-logout:hover{background:rgba(255,255,255,0.07);color:#fff}
+.main{padding:24px 28px;max-width:900px;margin:0 auto}
+/* LOTE INFO */
+.lote-info-card{background:var(--white);border:0.5px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.lote-info-left{display:flex;align-items:center;gap:14px}
+.lote-thumb{width:56px;height:56px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,var(--g700),var(--g900));display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lote-thumb img{width:100%;height:100%;object-fit:cover}
+.lote-thumb i{font-size:22px;color:rgba(255,255,255,0.3)}
+.lote-name{font-size:16px;font-weight:500;color:var(--text)}
+.lote-code{font-size:12px;color:var(--hint);margin-top:2px}
+.lote-stats{display:flex;gap:14px}
+.lote-stat{text-align:center}
+.lote-stat-val{font-size:15px;font-weight:500;color:var(--text)}
+.lote-stat-lbl{font-size:10px;color:var(--hint);margin-top:1px}
+/* GRID */
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--white);border:0.5px solid var(--border);border-radius:14px;padding:22px}
+.card-title{font-size:14px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px;margin-bottom:18px}
+.card-title i{font-size:16px;color:var(--g500)}
+/* QR */
+.qr-box{background:var(--cream);border:0.5px solid var(--border);border-radius:12px;padding:20px;display:flex;justify-content:center;align-items:center;margin-bottom:16px}
+.qr-box svg,.qr-box img{max-width:220px;height:auto}
+.btn-dl{display:flex;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:10px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:8px;transition:all 0.15s}
+.btn-dl:last-child{margin-bottom:0}
+.btn-dl-green{background:var(--g600);color:#fff}
+.btn-dl-green:hover{background:var(--g700)}
+.btn-dl-amber{background:var(--amber);color:#fff}
+.btn-dl-amber:hover{background:#a36608}
+.btn-dl-blue{background:#185fa5;color:#fff}
+.btn-dl-blue:hover{background:#134d87}
+/* STEPS */
+.step{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px}
+.step:last-child{margin-bottom:0}
+.step-num{width:30px;height:30px;border-radius:50%;background:var(--g100);color:var(--g700);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px}
+.step-desc{font-size:12px;color:var(--muted);line-height:1.6}
+/* TIP */
+.tip{background:var(--amber-bg);border:0.5px solid #e4c08a;border-radius:10px;padding:12px 14px;font-size:12px;color:#5a3e08;display:flex;gap:8px;margin-top:18px}
+.tip i{color:var(--amber);flex-shrink:0;margin-top:1px}
+/* URL */
+.url-card{background:var(--white);border:0.5px solid var(--border);border-radius:14px;padding:18px 22px;margin-top:16px}
+.url-row{display:flex;gap:8px;align-items:center}
+.url-input{flex:1;padding:9px 14px;border:1px solid var(--border);border-radius:9px;font-size:12px;color:var(--muted);background:var(--cream);font-family:monospace}
+.btn-copy{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:9px;background:var(--g600);color:#fff;font-size:13px;border:none;cursor:pointer;transition:background 0.15s;font-family:inherit;flex-shrink:0}
+.btn-copy:hover{background:var(--g700)}
+.url-hint{font-size:11px;color:var(--hint);margin-top:6px;display:flex;align-items:center;gap:4px}
+@media(max-width:700px){.content-grid{grid-template-columns:1fr}.main{padding:16px}.lote-stats{display:none}}
+</style>
 
-    <div class="container mx-auto px-4 py-8">
-        <div class="max-w-4xl mx-auto">
-            <!-- Header con info del lote -->
-            <div class="bg-white rounded-2xl shadow-xl p-6 mb-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-800">{{ $lote->variedad }}</h2>
-                        <p class="text-gray-600">{{ $lote->codigo_lote }}</p>
-                    </div>
-                    @if($lote->imagenes->first())
-                        <img src="{{ asset('storage/' . $lote->imagenes->first()->ruta_imagen) }}" 
-                             alt="{{ $lote->codigo_lote }}"
-                             class="w-20 h-20 object-cover rounded-lg shadow">
-                    @endif
-                </div>
-                
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="bg-green-50 p-3 rounded-lg">
-                        <p class="text-xs text-green-700">Peso</p>
-                        <p class="text-lg font-bold text-green-800">{{ number_format($lote->peso_kg, 0) }} kg</p>
-                    </div>
-                    <div class="bg-blue-50 p-3 rounded-lg">
-                        <p class="text-xs text-blue-700">Altura</p>
-                        <p class="text-lg font-bold text-blue-800">{{ number_format($lote->altura_msnm, 0) }} msnm</p>
-                    </div>
-                    <div class="bg-amber-50 p-3 rounded-lg">
-                        <p class="text-xs text-amber-700">Cosecha</p>
-                        <p class="text-lg font-bold text-amber-800">{{ $lote->fecha_cosecha->format('d/m/Y') }}</p>
-                    </div>
-                </div>
-            </div>
+<div>
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo"><img src="{{ asset('images/logo-cafetrace.png') }}" alt="CaféTrace"></div>
+    <div><div class="nav-name">QR · {{ $lote->codigo_lote }}</div><div class="nav-sub">Trazabilidad</div></div>
+  </div>
+  <div class="nav-actions">
+    <a href="{{ route('caficultor.lotes.ver', $lote->id) }}" class="btn-back"><i class="fas fa-arrow-left"></i> Volver al lote</a>
+    <form method="POST" action="{{ route('logout') }}">@csrf
+      <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Salir</button>
+    </form>
+  </div>
+</nav>
 
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- QR Code -->
-                <div class="bg-white rounded-2xl shadow-xl p-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">
-                        <i class="fas fa-qrcode text-green-600 mr-2"></i>
-                        Código QR
-                    </h3>
-                    
-                    <div class="bg-gray-50 p-6 rounded-xl mb-6 flex items-center justify-center">
-                        {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(250)->margin(2)->errorCorrection('H')->generate(route('trazabilidad.lote', $lote->codigo_lote)) !!}
-                    </div>
-
-                    <div class="space-y-3">
-                        <a href="{{ route('caficultor.lotes.qr.descargar', $lote->id) }}" 
-                           class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition flex items-center justify-center font-semibold">
-                            <i class="fas fa-download mr-2"></i>
-                            Descargar QR (PNG)
-                        </a>
-
-                        <a href="{{ route('caficultor.lotes.qr.etiqueta', $lote->id) }}" 
-                           class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 px-4 rounded-lg transition flex items-center justify-center font-semibold">
-                            <i class="fas fa-file-pdf mr-2"></i>
-                            Descargar Etiqueta (PDF)
-                        </a>
-
-                        <a href="{{ route('trazabilidad.lote', $lote->codigo_lote) }}" 
-                           target="_blank"
-                           class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition flex items-center justify-center font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            Ver Trazabilidad
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Instrucciones -->
-                <div class="bg-white rounded-2xl shadow-xl p-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">
-                        <i class="fas fa-info-circle text-blue-600 mr-2"></i>
-                        ¿Cómo usar el QR?
-                    </h3>
-
-                    <div class="space-y-4">
-                        <div class="flex items-start">
-                            <div class="bg-green-100 rounded-full w-8 h-8 flex items-center justify-center text-green-700 font-bold mr-3 flex-shrink-0">
-                                1
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-800 mb-1">Descarga el QR</h4>
-                                <p class="text-sm text-gray-600">Descarga la imagen PNG o el PDF con la etiqueta completa</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start">
-                            <div class="bg-green-100 rounded-full w-8 h-8 flex items-center justify-center text-green-700 font-bold mr-3 flex-shrink-0">
-                                2
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-800 mb-1">Imprime</h4>
-                                <p class="text-sm text-gray-600">Imprime el QR en etiquetas adhesivas o directamente en tus empaques</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start">
-                            <div class="bg-green-100 rounded-full w-8 h-8 flex items-center justify-center text-green-700 font-bold mr-3 flex-shrink-0">
-                                3
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-800 mb-1">Pega en tus productos</h4>
-                                <p class="text-sm text-gray-600">Coloca el QR en las bolsas de café para que tus clientes puedan verificar la trazabilidad</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start">
-                            <div class="bg-green-100 rounded-full w-8 h-8 flex items-center justify-center text-green-700 font-bold mr-3 flex-shrink-0">
-                                4
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-800 mb-1">Verificación instantánea</h4>
-                                <p class="text-sm text-gray-600">Cualquier persona puede escanear el QR y ver toda la información de trazabilidad</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4">
-                        <p class="text-sm text-gray-700">
-                            <i class="fas fa-lightbulb text-amber-600 mr-2"></i>
-                            <strong>Tip:</strong> El QR apunta directamente a la página de trazabilidad pública de este lote
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- URL del QR -->
-            <div class="bg-white rounded-2xl shadow-xl p-6 mt-6">
-                <h3 class="text-lg font-bold text-gray-800 mb-3">
-                    <i class="fas fa-link text-gray-600 mr-2"></i>
-                    URL de Trazabilidad
-                </h3>
-                <div class="flex items-center gap-3">
-                    <input type="text" 
-                           value="{{ route('trazabilidad.lote', $lote->codigo_lote) }}" 
-                           readonly
-                           id="urlTrazabilidad"
-                           class="flex-1 bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 text-sm">
-                    <button onclick="copiarURL()" 
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">
-                        <i class="fas fa-copy mr-2"></i>Copiar
-                    </button>
-                </div>
-                <p class="text-xs text-gray-500 mt-2">
-                    <i class="fas fa-info-circle mr-1"></i>
-                    Esta URL también puede compartirse manualmente sin necesidad del QR
-                </p>
-            </div>
-        </div>
+<div class="main">
+  {{-- LOTE INFO --}}
+  <div class="lote-info-card">
+    <div class="lote-info-left">
+      <div class="lote-thumb">
+        @if($lote->imagenes->first())
+          <img src="{{ asset('storage/' . $lote->imagenes->first()->ruta_imagen) }}" alt="">
+        @else
+          <i class="fas fa-coffee"></i>
+        @endif
+      </div>
+      <div>
+        <div class="lote-name">{{ $lote->variedad }}</div>
+        <div class="lote-code">{{ $lote->codigo_lote }}</div>
+      </div>
     </div>
+    <div class="lote-stats">
+      <div class="lote-stat"><div class="lote-stat-val">{{ number_format($lote->peso_kg, 0) }} kg</div><div class="lote-stat-lbl">Peso</div></div>
+      <div class="lote-stat"><div class="lote-stat-val">{{ number_format($lote->altura_msnm, 0) }}</div><div class="lote-stat-lbl">msnm</div></div>
+      <div class="lote-stat"><div class="lote-stat-val">{{ $lote->fecha_cosecha->format('d/m/Y') }}</div><div class="lote-stat-lbl">Cosecha</div></div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    {{-- QR --}}
+    <div class="card">
+      <div class="card-title"><i class="fas fa-qrcode"></i> Código QR</div>
+      <div class="qr-box">
+        {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(220)->margin(2)->errorCorrection('H')->generate(route('trazabilidad.lote', $lote->codigo_lote)) !!}
+      </div>
+      <a href="{{ route('caficultor.lotes.qr.descargar', $lote->id) }}" class="btn-dl btn-dl-green">
+        <i class="fas fa-download"></i> Descargar QR (PNG)
+      </a>
+      <a href="{{ route('caficultor.lotes.qr.etiqueta', $lote->id) }}" class="btn-dl btn-dl-amber">
+        <i class="fas fa-file-pdf"></i> Descargar etiqueta (PDF)
+      </a>
+      <a href="{{ route('trazabilidad.lote', $lote->codigo_lote) }}" target="_blank" class="btn-dl btn-dl-blue">
+        <i class="fas fa-external-link-alt"></i> Ver trazabilidad
+      </a>
+    </div>
+
+    {{-- INSTRUCCIONES --}}
+    <div class="card">
+      <div class="card-title"><i class="fas fa-info-circle"></i> ¿Cómo usar el QR?</div>
+      <div class="step"><div class="step-num">1</div><div><div class="step-title">Descarga el QR</div><div class="step-desc">Descarga la imagen PNG o el PDF con la etiqueta completa.</div></div></div>
+      <div class="step"><div class="step-num">2</div><div><div class="step-title">Imprime</div><div class="step-desc">Imprime en etiquetas adhesivas o directamente en tus empaques.</div></div></div>
+      <div class="step"><div class="step-num">3</div><div><div class="step-title">Pega en tus productos</div><div class="step-desc">Coloca el QR en las bolsas de café para verificar la trazabilidad.</div></div></div>
+      <div class="step"><div class="step-num">4</div><div><div class="step-title">Verificación instantánea</div><div class="step-desc">Cualquier persona puede escanear y ver la información completa.</div></div></div>
+      <div class="tip"><i class="fas fa-lightbulb"></i><span>El QR apunta directamente a la página de trazabilidad pública de este lote.</span></div>
+    </div>
+  </div>
+
+  {{-- URL --}}
+  <div class="url-card">
+    <div class="card-title" style="margin-bottom:12px"><i class="fas fa-link" style="color:var(--g500)"></i> URL de trazabilidad</div>
+    <div class="url-row">
+      <input type="text" id="urlTrazabilidad" value="{{ route('trazabilidad.lote', $lote->codigo_lote) }}" readonly class="url-input">
+      <button onclick="copiarURL()" class="btn-copy"><i class="fas fa-copy"></i> Copiar</button>
+    </div>
+    <div class="url-hint"><i class="fas fa-info-circle"></i> Esta URL puede compartirse manualmente sin necesidad del QR</div>
+  </div>
+</div>
 </div>
 
 <script>
 function copiarURL() {
-    const input = document.getElementById('urlTrazabilidad');
-    input.select();
-    document.execCommand('copy');
-    
-    alert('✓ URL copiada al portapapeles');
+  const input = document.getElementById('urlTrazabilidad');
+  input.select();
+  document.execCommand('copy');
+  alert('✓ URL copiada al portapapeles');
 }
 </script>
 @endsection

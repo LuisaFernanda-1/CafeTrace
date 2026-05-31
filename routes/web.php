@@ -28,6 +28,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::post('/usuarios/{id}/rechazar', [AdminController::class, 'rechazarUsuario'])->name('usuarios.rechazar');
     Route::get('/lotes', [AdminController::class, 'lotes'])->name('lotes');
     Route::delete('/lotes/{id}', [AdminController::class, 'eliminarLote'])->name('lotes.eliminar');
+    Route::get('/transacciones', [AdminController::class, 'transacciones'])->name('transacciones');
+    Route::put('/transacciones/{id}/estado', [AdminController::class, 'actualizarEstadoTransaccion'])->name('transacciones.estado');
 });
 
 // Dashboard Caficultor
@@ -44,8 +46,8 @@ Route::middleware(['auth'])->prefix('caficultor')->name('caficultor.')->group(fu
     Route::get('/lotes/{id}/qr', [CaficultorController::class, 'verQR'])->name('lotes.qr');
     Route::get('/lotes/{id}/qr/descargar', [CaficultorController::class, 'generarQR'])->name('lotes.qr.descargar');
     Route::get('/lotes/{id}/qr/etiqueta', [CaficultorController::class, 'descargarEtiquetaQR'])->name('lotes.qr.etiqueta');
-    // NUEVA RUTA DE VENTAS
     Route::get('/mis-ventas', [App\Http\Controllers\TransaccionController::class, 'misVentas'])->name('mis-ventas');
+    Route::put('/ventas/{id}/estado', [App\Http\Controllers\TransaccionController::class, 'actualizarEstado'])->name('ventas.actualizar-estado');
 
 });
 
@@ -64,6 +66,9 @@ Route::middleware(['auth'])->prefix('comprador')->name('comprador.')->group(func
     Route::post('/confirmar-compra', [App\Http\Controllers\TransaccionController::class, 'confirmarCompra'])->name('confirmar-compra');
     Route::get('/mis-compras', [App\Http\Controllers\TransaccionController::class, 'misCompras'])->name('mis-compras');
 });
+
+// Asistente IA (compartido entre caficultor y comprador)
+Route::middleware(['auth'])->post('/asistente/chat', [App\Http\Controllers\ChatbotController::class, 'chat'])->name('asistente.chat');
 
 // Ruta pública de trazabilidad
 Route::get('/trazabilidad/{codigo_lote}', [App\Http\Controllers\TrazabilidadController::class, 'ver'])->name('trazabilidad.lote');

@@ -12,6 +12,7 @@ class Transaccion extends Model
     protected $table = 'transacciones';
 
     protected $fillable = [
+        'codigo_transaccion',
         'lote_id',
         'caficultor_id',
         'comprador_id',
@@ -22,20 +23,31 @@ class Transaccion extends Model
         'total_caficultor',
         'estado',
         'metodo_pago',
+        'referencia_pago',
         'comprobante_pago',
-        'fecha_pago',
-        'fecha_envio',
+        'notas_comprador',
+        'notas_caficultor',
+        'fecha_confirmacion',
         'fecha_entrega',
-        'direccion_envio',
-        'numero_guia',
-        'notas',
+        'fecha_completada',
     ];
 
     protected $casts = [
-        'fecha_pago' => 'datetime',
-        'fecha_envio' => 'datetime',
-        'fecha_entrega' => 'datetime',
+        'fecha_confirmacion' => 'datetime',
+        'fecha_entrega'      => 'datetime',
+        'fecha_completada'   => 'datetime',
     ];
+
+    // MÉTODOS ESTÁTICOS
+    public static function calcularComision(float $monto): float
+    {
+        return round($monto * 0.05, 2);
+    }
+
+    public static function generarCodigo(): string
+    {
+        return 'TRX-' . strtoupper(\Illuminate\Support\Str::random(8)) . '-' . date('Ymd');
+    }
 
     // RELACIONES
     public function lote()

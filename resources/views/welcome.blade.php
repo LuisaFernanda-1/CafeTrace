@@ -139,54 +139,111 @@
 
 {{-- FAB --}}
 <button id="fabBtn" class="fab" onclick="accesibilidad.togglePanel()" aria-label="Abrir panel de accesibilidad">
-  ♿ Accesibilidad
+  <svg class="fab-icon" viewBox="0 0 24 24" fill="currentColor" width="17" height="17" aria-hidden="true">
+    <circle cx="12" cy="4" r="2"/>
+    <path d="M10.5 8.5C9.67 8.5 9 9.17 9 10v5.5H6.5a1.5 1.5 0 000 3h4A1.5 1.5 0 0012 17v-4h1.5l1.8 2.7a1.5 1.5 0 002.5-1.6L15.9 11A1.5 1.5 0 0014.5 10H12v-.5c0-.28-.1-.53-.26-.73L10.5 8.5z"/>
+  </svg>
+  <span class="fab-label">Accesibilidad</span>
 </button>
 
 {{-- PANEL ACCESIBILIDAD --}}
 <div id="accesibilidadPanel" role="dialog" aria-modal="true" aria-label="Opciones de accesibilidad">
   <div class="panel-overlay" onclick="accesibilidad.togglePanel()"></div>
   <div class="panel-sidebar">
+
     <div class="panel-header">
-      <h3>♿ Accesibilidad</h3>
-      <button onclick="accesibilidad.togglePanel()" class="panel-close" aria-label="Cerrar panel">✕</button>
+      <div class="panel-header-info">
+        <div class="panel-header-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="4" r="2"/>
+            <path d="M10.5 8.5C9.67 8.5 9 9.17 9 10v5.5H6.5a1.5 1.5 0 000 3h4A1.5 1.5 0 0012 17v-4h1.5l1.8 2.7a1.5 1.5 0 002.5-1.6L15.9 11A1.5 1.5 0 0014.5 10H12v-.5c0-.28-.1-.53-.26-.73L10.5 8.5z"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Accesibilidad</h3>
+          <p class="panel-header-sub">Personaliza tu experiencia</p>
+        </div>
+      </div>
+      <button onclick="accesibilidad.togglePanel()" class="panel-close" aria-label="Cerrar panel">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
     </div>
+
     <div class="panel-body">
 
       <div class="panel-option">
-        <label>Tamaño de texto</label>
+        <label>
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true">
+            <path d="M9 4v3h5v12h3V7h5V4H9zm-6 8h3v7h3v-7h3V9H3v3z"/>
+          </svg>
+          Tamaño de texto
+        </label>
         <div class="size-control">
-          <button onclick="accesibilidad.texto(-1)" aria-label="Reducir texto">A−</button>
+          <button onclick="accesibilidad.texto(-1)" aria-label="Reducir texto">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M19 13H5v-2h14v2z"/></svg>
+          </button>
           <span id="textSizeValue" aria-live="polite">100%</span>
-          <button onclick="accesibilidad.texto(1)" aria-label="Aumentar texto">A+</button>
+          <button onclick="accesibilidad.texto(1)" aria-label="Aumentar texto">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          </button>
         </div>
       </div>
 
       <div class="panel-option">
-        <label for="darkBtn">Modo oscuro</label>
+        <label for="darkBtn">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true">
+            <path d="M12 3a6 6 0 009 9 9 9 0 11-9-9z"/>
+          </svg>
+          Modo oscuro
+        </label>
         <button id="darkBtn" onclick="accesibilidad.darkMode()" class="toggle-btn" aria-pressed="false">Activar</button>
       </div>
 
       <div class="panel-option">
-        <label for="contrastBtn">Alto contraste</label>
+        <label for="contrastBtn">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86z"/>
+          </svg>
+          Alto contraste
+        </label>
         <button id="contrastBtn" onclick="accesibilidad.contrastMode()" class="toggle-btn" aria-pressed="false">Activar</button>
       </div>
 
       <div class="panel-option">
-        <label for="dyslexiaBtn">📖 Fuente para dislexia</label>
+        <label for="dyslexiaBtn">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true">
+            <path d="M18 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2zm-1 16H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V8h10v2z"/>
+          </svg>
+          Fuente para dislexia
+        </label>
         <button id="dyslexiaBtn" onclick="accesibilidad.dyslexiaMode()" class="toggle-btn" aria-pressed="false">Activar</button>
-        <small>Evita confundir letras como b/d/p/q</small>
+        <small>Evita confundir letras similares como b/d/p/q</small>
       </div>
 
       <div class="panel-option">
-        <label for="voiceBtn">🔊 Leer en voz alta</label>
+        <label for="voiceBtn">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 7.97v8.05A4.5 4.5 0 0016.5 12zm2.5 0c0 2.77-1.19 5.27-3 7.03l1.42 1.42A11.94 11.94 0 0021 12c0-3.31-1.34-6.3-3.5-8.46L16.08 4.96C17.88 6.72 19 9.22 19 12z"/>
+          </svg>
+          Leer en voz alta
+        </label>
         <button id="voiceBtn" onclick="accesibilidad.voiceMode()" class="toggle-btn" aria-pressed="false">Activar</button>
         <small id="voice-status" aria-live="polite"></small>
       </div>
 
     </div>
+
     <div class="panel-footer">
-      <button onclick="accesibilidad.resetAll()" class="reset-btn">↺ Restablecer todo</button>
+      <button onclick="accesibilidad.resetAll()" class="reset-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true">
+          <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+        </svg>
+        Restablecer todo
+      </button>
     </div>
+
   </div>
 </div>
 
@@ -655,22 +712,47 @@ body.contrast .check { color: #00ff00 !important; }
   position: fixed;
   bottom: clamp(16px, 4vw, 28px);
   right:  clamp(16px, 4vw, 28px);
-  background: var(--accent2);
+  background: linear-gradient(135deg, #b45309 0%, #fbbf24 100%);
   color: #fff;
   border: none;
-  padding: 12px 20px;
+  padding: 12px 20px 12px 15px;
   border-radius: 50px;
   cursor: pointer;
-  font-weight: 700;
-  font-size: 0.85rem;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.28);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 22px rgba(180,83,9,0.45);
   z-index: 200;
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.22s, box-shadow 0.22s;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.fab:hover  { transform: scale(1.05); }
-.fab:active { transform: scale(0.97); }
+.fab::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 60px;
+  border: 2px solid rgba(251,191,36,0.55);
+  animation: fabRing 2.6s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes fabRing {
+  0%   { opacity: 0.9; transform: scale(1); }
+  65%  { opacity: 0;   transform: scale(1.14); }
+  100% { opacity: 0;   transform: scale(1.14); }
+}
+.fab-icon { flex-shrink: 0; }
+.fab-label { text-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+.fab:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 32px rgba(180,83,9,0.55);
+}
+.fab:active { transform: scale(0.96); }
 body.contrast .fab { background: #ff6600; color: #000; border: 2px solid #fff; }
+body.contrast .fab::before { display: none; }
 
 /* ===========================
    PANEL ACCESIBILIDAD
@@ -687,149 +769,197 @@ body.contrast .fab { background: #ff6600; color: #000; border: 2px solid #fff; }
 .panel-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 .panel-sidebar {
   position: relative;
-  width: min(360px, 100vw);
+  width: min(370px, 100vw);
   height: 100%;
   background: var(--surface);
   display: flex;
   flex-direction: column;
-  animation: slideIn 0.28s ease;
+  animation: slideIn 0.3s cubic-bezier(0.32, 0.72, 0, 1);
   overflow: hidden;
+  box-shadow: -6px 0 40px rgba(0,0,0,0.2);
 }
 @keyframes slideIn {
   from { transform: translateX(100%); }
   to   { transform: translateX(0); }
 }
+
+/* — Header — */
 .panel-header {
-  background: linear-gradient(135deg, #6b2f06, #d97706);
-  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, #b45309 0%, #fbbf24 100%);
+  padding: 1.4rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
 }
+.panel-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.panel-header-icon {
+  background: rgba(255,255,255,0.22);
+  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
 .panel-header h3 {
   color: #fff;
-  font-size: 1rem;
+  font-size: 1.02rem;
   font-weight: 700;
+  margin: 0 0 2px;
+}
+.panel-header-sub {
+  color: rgba(255,255,255,0.78);
+  font-size: 0.7rem;
   margin: 0;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 .panel-close {
   background: rgba(255,255,255,0.2);
   border: none;
   color: #fff;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s;
+  flex-shrink: 0;
 }
-.panel-close:hover { background: rgba(255,255,255,0.35); }
+.panel-close:hover { background: rgba(255,255,255,0.38); }
 
+/* — Body — */
 .panel-body {
   flex: 1;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.1rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 0.55rem;
 }
 .panel-option {
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.panel-option:last-child { border-bottom: none; }
+.panel-option:hover {
+  border-color: #fbbf24;
+  box-shadow: 0 2px 10px rgba(180,83,9,0.08);
+}
 .panel-option label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-weight: 700;
-  font-size: 0.88rem;
+  font-size: 0.87rem;
   color: var(--text);
   margin-bottom: 10px;
+  cursor: default;
 }
+.panel-option label svg { color: var(--text3); flex-shrink: 0; }
 .panel-option small {
   display: block;
-  margin-top: 7px;
-  font-size: 0.7rem;
+  margin-top: 8px;
+  font-size: 0.69rem;
   color: var(--text3);
   line-height: 1.5;
 }
+
+/* — Size control — */
 .size-control {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: stretch;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
 }
 .size-control button {
-  padding: 8px 16px;
-  border: 1.5px solid var(--border);
-  background: var(--bg2);
+  padding: 9px 16px;
+  border: none;
+  background: transparent;
   color: var(--text);
-  border-radius: 8px;
   cursor: pointer;
-  font-weight: 700;
-  font-size: 0.9rem;
-  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
 }
-.size-control button:hover { background: var(--border); }
+.size-control button:hover { background: var(--bg2); }
 .size-control span {
-  min-width: 50px;
+  flex: 1;
   text-align: center;
-  font-weight: 600;
-  font-size: 0.88rem;
+  font-weight: 700;
+  font-size: 0.85rem;
   color: var(--text);
+  border-left: 1.5px solid var(--border);
+  border-right: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+/* — Toggle buttons — */
 .toggle-btn {
   width: 100%;
   padding: 10px 14px;
-  background: var(--bg2);
+  background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.88rem;
-  color: var(--text);
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-  text-align: left;
+  font-size: 0.85rem;
+  color: var(--text2);
+  transition: all 0.22s;
+  text-align: center;
+  letter-spacing: 0.2px;
+  font-family: inherit;
 }
 .toggle-btn.active {
-  background: #15803d;
+  background: linear-gradient(135deg, #b45309, #fbbf24);
   color: #fff;
-  border-color: #15803d;
+  border-color: transparent;
+  box-shadow: 0 3px 12px rgba(180,83,9,0.35);
 }
-.toggle-btn:hover:not(.active) { background: var(--border); }
+.toggle-btn:hover:not(.active) {
+  border-color: #fbbf24;
+  color: var(--text);
+}
 
-body.contrast .toggle-btn {
-  background: #000;
-  color: #fff;
-  border: 2px solid #fff;
-}
-body.contrast .toggle-btn.active {
-  background: #00cc00;
-  color: #000;
-  border-color: #fff;
-}
-body.contrast .panel-sidebar {
-  background: #000;
-  border-left: 2px solid #fff;
-}
-body.contrast .panel-option { border-color: #555; }
-body.contrast .panel-option label { color: #fff; }
-body.contrast .size-control button {
-  background: #000;
-  color: #fff;
-  border-color: #fff;
-}
-body.contrast .size-control span { color: #ffff00; }
+/* — Contrast overrides — */
+body.contrast .panel-sidebar  { background: #000; border-left: 2px solid #fff; }
+body.contrast .panel-option   { background: #111; border-color: #555; }
+body.contrast .panel-option:hover { border-color: #fff; box-shadow: none; }
+body.contrast .panel-option label { color: #fff; cursor: default; }
+body.contrast .panel-option label svg { color: #ffff00; }
 body.contrast .panel-option small { color: #00ffff; }
+body.contrast .size-control   { background: #000; border-color: #fff; }
+body.contrast .size-control button { color: #fff; }
+body.contrast .size-control button:hover { background: #222; }
+body.contrast .size-control span { color: #ffff00; border-color: #fff; }
+body.contrast .toggle-btn     { background: #000; color: #fff; border: 2px solid #fff; }
+body.contrast .toggle-btn.active { background: #00cc00; color: #000; border-color: #fff; box-shadow: none; }
+body.contrast .toggle-btn:hover:not(.active) { border-color: #fff; color: #fff; }
 
+/* — Footer — */
 .panel-footer {
-  padding: 1rem 1.5rem;
+  padding: 1rem 1.1rem;
   border-top: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -841,11 +971,16 @@ body.contrast .panel-option small { color: #00ffff; }
   border-radius: 10px;
   cursor: pointer;
   color: var(--text3);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: inherit;
 }
-.reset-btn:hover { background: var(--bg2); }
+.reset-btn:hover { background: var(--bg2); color: var(--text); border-color: var(--text3); }
 body.contrast .reset-btn { background: #000; color: #fff; border-color: #fff; }
 
 /* ===========================
@@ -864,7 +999,8 @@ body.contrast .reset-btn { background: #000; color: #fff; border-color: #fff; }
 
 @media (max-width: 400px) {
   .nav-sub { display: none; }
-  .fab { padding: 10px 14px; font-size: 0.78rem; }
+  .fab { padding: 11px 13px; }
+  .fab-label { display: none; }
 }
 </style>
 

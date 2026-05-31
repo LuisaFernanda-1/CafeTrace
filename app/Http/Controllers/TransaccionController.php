@@ -113,7 +113,10 @@ class TransaccionController extends Controller
     public function confirmarCompra(Request $request)
     {
         $request->validate([
-            'notas' => 'nullable|string|max:500',
+            'metodo_pago'     => 'required|in:nequi,bancolombia,davivienda,pse,efectivo',
+            'referencia_pago' => 'required|string|max:100',
+            'comprobante'     => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'notas'           => 'nullable|string|max:500',
         ]);
 
         DB::beginTransaction();
@@ -129,6 +132,9 @@ class TransaccionController extends Controller
 
             $transacciones = [];
 
+            // Guardar comprobante una sola vez (aplica a todas las transacciones del carrito)
+            $comprobantePath = $request->file('comprobante')->store('comprobantes', 'public');
+
             foreach ($items as $item) {
                 // Verificar disponibilidad
                 if ($item->cantidad_kg > $item->lote->peso_disponible) {
@@ -142,16 +148,19 @@ class TransaccionController extends Controller
                 // Crear transacción
                 $transaccion = Transaccion::create([
                     'codigo_transaccion' => Transaccion::generarCodigo(),
-                    'comprador_id' => auth()->id(),
-                    'caficultor_id' => $item->lote->caficultor_id,
-                    'lote_id' => $item->lote_id,
-                    'cantidad_kg' => $item->cantidad_kg,
-                    'precio_por_kg' => $item->lote->precio_por_kg,
-                    'precio_total' => $precioTotal,
-                    'comision_plataforma' => $comision,
-                    'total_caficultor' => $precioTotal - $comision,
-                    'estado' => 'pendiente',
-                    'notas_comprador' => $request->notas,
+                    'comprador_id'       => auth()->id(),
+                    'caficultor_id'      => $item->lote->caficultor_id,
+                    'lote_id'            => $item->lote_id,
+                    'cantidad_kg'        => $item->cantidad_kg,
+                    'precio_por_kg'      => $item->lote->precio_por_kg,
+                    'precio_total'       => $precioTotal,
+                    'comision_plataforma'=> $comision,
+                    'total_caficultor'   => $precioTotal - $comision,
+                    'estado'             => 'pendiente',
+                    'metodo_pago'        => $request->metodo_pago,
+                    'referencia_pago'    => $request->referencia_pago,
+                    'comprobante_pago'   => $comprobantePath,
+                    'notas_comprador'    => $request->notas,
                     'fecha_confirmacion' => now(),
                 ]);
 
@@ -188,6 +197,26 @@ class TransaccionController extends Controller
             ->paginate(10);
 
         return view('comprador.mis-compras', compact('compras'));
+    }
+
+    // Actualizar estado de una venta (caficultor)
+    public function actualizarEstado(Request $request, $id)
+    {
+        $transaccion = Transaccion::where('caficultor_id', auth()->id())->findOrFail($id);
+
+        $request->validate([
+            'estado' => 'required|in:confirmada,en_proceso,completada,cancelada',
+        ]);
+
+        $transaccion->estado = $request->estado;
+
+        if ($request->estado === 'completada') {
+            $transaccion->fecha_entrega = now();
+        }
+
+        $transaccion->save();
+
+        return back()->with('success', 'Estado actualizado correctamente.');
     }
 
     // Historial de ventas del caficultor

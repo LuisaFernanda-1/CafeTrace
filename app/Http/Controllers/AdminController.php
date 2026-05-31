@@ -98,7 +98,38 @@ class AdminController extends Controller
         return view('admin.lotes', compact('lotes'));
     }
 
-   public function eliminarLote($id)
+    public function transacciones()
+    {
+        $transacciones = Transaccion::with(['comprador', 'caficultor', 'lote'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        $stats = [
+            'total'      => Transaccion::count(),
+            'monto'      => Transaccion::sum('precio_total'),
+            'comisiones' => Transaccion::sum('comision_plataforma'),
+            'pendientes' => Transaccion::where('estado', 'pendiente')->count(),
+        ];
+
+        return view('admin.transacciones', compact('transacciones', 'stats'));
+    }
+
+    public function actualizarEstadoTransaccion(Request $request, $id)
+    {
+        $transaccion = Transaccion::findOrFail($id);
+        $request->validate(['estado' => 'required|in:confirmada,en_proceso,completada,cancelada']);
+
+        $transaccion->estado = $request->estado;
+        if ($request->estado === 'completada') {
+            $transaccion->fecha_entrega = now();
+            $transaccion->fecha_completada = now();
+        }
+        $transaccion->save();
+
+        return back()->with('success', 'Estado actualizado correctamente.');
+    }
+
+    public function eliminarLote($id)
 {
     $lote = LoteCafe::withTrashed()->findOrFail($id);
     
